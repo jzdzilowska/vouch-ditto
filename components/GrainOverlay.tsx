@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-const GRAIN_SIZE = 128;
-const FPS = 12;
+const GRAIN_SIZE = 512;
+const FPS = 14;
 
-export default function GrainOverlay({ opacity = 0.12 }: { opacity?: number }) {
+export default function GrainOverlay({ opacity = 0.14 }: { opacity?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -60,7 +60,6 @@ export default function GrainOverlay({ opacity = 0.12 }: { opacity?: number }) {
         pointerEvents: "none",
         opacity,
         mixBlendMode: "overlay",
-        imageRendering: "pixelated",
       }}
     />
   );
