@@ -115,7 +115,7 @@ body {
 }
 
 .btn-secondary {
-  @apply btn bg-white/8 text-ink border border-white/10 hover:bg-white/12 backdrop-blur-sm;
+  @apply btn bg-white/[0.08] text-ink border border-white/10 hover:bg-white/[0.12] backdrop-blur-sm;
   font-family: var(--font-typewriter), "Courier New", monospace;
   letter-spacing: 0.04em;
 }
@@ -127,7 +127,7 @@ body {
 
 /* ─── Cards ─── */
 .card {
-  @apply bg-white/5 backdrop-blur-md border border-white/8 rounded-2xl;
+  @apply bg-white/5 backdrop-blur-md border border-white/[0.08] rounded-2xl;
 }
 
 /* ─── Divider with text ─── */
