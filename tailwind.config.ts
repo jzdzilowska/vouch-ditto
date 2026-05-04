@@ -9,15 +9,28 @@ const config: Config = {
     extend: {
       colors: {
         bg: "#0B0B0F",
-        card: "#15151C",
+        card: "rgba(255,255,255,0.06)",
+        "card-solid": "#15151C",
         ink: "#F4F1EA",
-        muted: "#8A8B95",
-        accent: "#FF5A78",
-        accent2: "#7C5CFF",
+        muted: "#A8A29E",
+        accent: "#C8553D",
+        accent2: "#D4A574",
+        warm: "#E8C4A0",
+        blush: "#D4908A",
       },
       fontFamily: {
-        sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Helvetica", "Arial"],
-        display: ["ui-serif", "Georgia", "Cambria", "Times New Roman"],
+        sans: ["var(--font-sans)", "system-ui", "-apple-system", "Helvetica", "Arial", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "Cambria", "Times New Roman", "serif"],
+        typewriter: ["var(--font-typewriter)", "Courier New", "monospace"],
+      },
+      animation: {
+        "gradient-drift": "gradientDrift 12s ease infinite",
+      },
+      keyframes: {
+        gradientDrift: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
       },
     },
   },
