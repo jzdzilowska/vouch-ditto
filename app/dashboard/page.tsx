@@ -20,10 +20,11 @@ export default async function DashboardPage() {
 
   if (!profile) redirect("/onboarding");
 
-  const { count: submissionCount = 0 } = await supabase
+  const { count: rawCount } = await supabase
     .from("friend_submissions")
     .select("id", { count: "exact", head: true })
     .eq("profile_id", profile.id);
+  const submissionCount = rawCount ?? 0;
 
   const { data: latestDraft } = await supabase
     .from("profile_drafts")
@@ -33,7 +34,7 @@ export default async function DashboardPage() {
     .limit(1)
     .maybeSingle();
 
-  const ready = (submissionCount ?? 0) >= 2;
+  const ready = submissionCount >= 2;
   const live = profile.status === "live";
 
   return (
@@ -65,7 +66,7 @@ export default async function DashboardPage() {
       {/* Step: collect */}
       <section className="card p-6 mb-4">
         <div className="flex items-start gap-3 mb-4">
-          <Step n={1} done={(submissionCount ?? 0) >= 2} />
+          <Step n={1} done={submissionCount >= 2} />
           <div className="flex-1">
             <h2 className="text-lg font-semibold">Collect 2–3 friend vouches</h2>
             <p className="text-muted text-sm">
