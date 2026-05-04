@@ -6,28 +6,150 @@
   color-scheme: dark;
 }
 
-html, body { background: #0B0B0F; color: #F4F1EA; }
-body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial; -webkit-font-smoothing: antialiased; }
+html, body {
+  background: #0B0B0F;
+  color: #F4F1EA;
+}
 
-/* Inputs */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Animated gradient background ─── */
+.gradient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, #6B2A3A 0%, #2A1520 35%, #0B0B0F 70%),
+              radial-gradient(ellipse 60% 50% at 30% 60%, #4A2020 0%, transparent 60%),
+              radial-gradient(ellipse 50% 40% at 70% 30%, #3D2B1F 0%, transparent 50%);
+  background-size: 200% 200%, 200% 200%, 200% 200%;
+  animation: gradientDrift 14s ease infinite;
+}
+
+.gradient-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.gradient-bg-light {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, #E8C4A0 0%, #D4A574 25%, #C8A88A 50%, #A8C4D4 80%),
+              radial-gradient(ellipse 50% 50% at 30% 70%, #D4908A 0%, transparent 50%),
+              radial-gradient(ellipse 60% 40% at 80% 20%, #F5E6D0 0%, transparent 40%);
+  background-size: 200% 200%, 200% 200%, 200% 200%;
+  animation: gradientDrift 14s ease infinite;
+}
+
+.gradient-bg-light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes gradientDrift {
+  0%, 100% { background-position: 0% 50%, 100% 50%, 50% 0%; }
+  25%      { background-position: 50% 0%, 0% 100%, 100% 50%; }
+  50%      { background-position: 100% 50%, 50% 0%, 0% 100%; }
+  75%      { background-position: 50% 100%, 100% 0%, 50% 50%; }
+}
+
+/* ─── Typography ─── */
+.text-typewriter {
+  font-family: var(--font-typewriter), "Courier New", monospace;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+}
+
+.text-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.h-display {
+  @apply text-display text-4xl md:text-5xl;
+}
+
+/* ─── Inputs ─── */
 .input {
-  @apply w-full bg-card border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-muted focus:outline-none focus:border-accent transition;
+  @apply w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-5 py-3.5
+         text-ink placeholder:text-white/30 focus:outline-none focus:border-white/25 transition;
+  font-family: var(--font-typewriter), "Courier New", monospace;
 }
-.label { @apply text-sm font-medium text-ink/90 mb-1.5 block; }
-.btn {
-  @apply inline-flex items-center justify-center rounded-full px-5 py-3 font-semibold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
-}
-.btn-primary { @apply btn bg-accent text-white hover:bg-accent/90; }
-.btn-secondary { @apply btn bg-white/10 text-ink hover:bg-white/15; }
-.btn-ghost { @apply btn bg-transparent text-ink hover:bg-white/5; }
-.card { @apply bg-card border border-white/5 rounded-2xl; }
-.h-display { @apply font-display text-4xl md:text-5xl tracking-tight; }
 
-/* Hide scrollbar on horizontal swipers */
+.label {
+  @apply text-sm font-medium text-ink/80 mb-1.5 block tracking-wide uppercase;
+  font-family: var(--font-typewriter), "Courier New", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+}
+
+/* ─── Buttons ─── */
+.btn {
+  @apply inline-flex items-center justify-center rounded-full px-6 py-3.5
+         font-medium transition-all duration-300
+         active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply btn bg-white text-neutral-900 hover:bg-white/90;
+  font-family: var(--font-typewriter), "Courier New", monospace;
+  letter-spacing: 0.04em;
+}
+
+.btn-secondary {
+  @apply btn bg-white/8 text-ink border border-white/10 hover:bg-white/12 backdrop-blur-sm;
+  font-family: var(--font-typewriter), "Courier New", monospace;
+  letter-spacing: 0.04em;
+}
+
+.btn-ghost {
+  @apply btn bg-transparent text-ink hover:bg-white/5;
+  font-family: var(--font-typewriter), "Courier New", monospace;
+}
+
+/* ─── Cards ─── */
+.card {
+  @apply bg-white/5 backdrop-blur-md border border-white/8 rounded-2xl;
+}
+
+/* ─── Divider with text ─── */
+.divider-text {
+  @apply flex items-center gap-4 text-white/30;
+  font-family: var(--font-typewriter), "Courier New", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.divider-text::before,
+.divider-text::after {
+  content: "";
+  @apply flex-1 h-px bg-white/10;
+}
+
+/* ─── Scrollbar ─── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* iMessage typing-indicator dots */
+/* ─── Typing indicator dots ─── */
 @keyframes vouchTypingDot {
   0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
   30%           { opacity: 1;    transform: translateY(-2px); }
