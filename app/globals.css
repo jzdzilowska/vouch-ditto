@@ -31,26 +31,26 @@ body {
 /* ─── Flare: bright concentrated core ─── */
 .flare-core {
   position: absolute;
-  width: 380px; height: 280px;
+  width: 480px; height: 480px;
   border-radius: 45% 55% 50% 50% / 55% 45% 55% 45%;
-  filter: blur(50px);
+  filter: blur(90px);
   opacity: 0.9;
   will-change: transform;
 }
 .flare-core-warm {
   background: radial-gradient(ellipse 70% 80% at 50% 50%, #fff8f0 0%, #f0a868 30%, #c0582e 60%, transparent 85%);
   top: 5%; left: 5%;
-  animation: flareCore 10s ease-in-out infinite;
+  animation: flareCore 15s ease-in-out infinite;
 }
 .flare-core-dusk {
-  background: radial-gradient(ellipse 70% 80% at 50% 50%, #ffe8f0 0%, #d070a0 30%, #8e4a6a 60%, transparent 85%);
+  background: radial-gradient(ellipse 90% 90% at 50% 50%, #ffe8f0 0%, #d070a0 30%, #8e4a6a 60%, transparent 85%);
   top: 5%; left: 5%;
-  animation: flareCore 12s ease-in-out infinite reverse;
+  animation: flareCore 11s ease-in-out infinite reverse;
 }
 .flare-core-honey {
-  background: radial-gradient(ellipse 70% 80% at 50% 50%, #fffbe8 0%, #f5c870 30%, #d8923a 60%, transparent 85%);
+  background: radial-gradient(ellipse 90% 90% at 50% 50%, #fffbe8 0%, #f5c870 30%, #d8923a 60%, transparent 85%);
   top: 5%; left: 5%;
-  animation: flareCore 11s ease-in-out infinite;
+  animation: flareCore 19s ease-in-out infinite;
 }
 
 /* ─── Flare: stretched smear trailing the core ─── */
@@ -65,17 +65,17 @@ body {
 .flare-trail-warm {
   background: radial-gradient(ellipse 90% 60% at 35% 50%, #e8944a 0%, #c0582e 35%, transparent 70%);
   top: 0%; left: -5%;
-  animation: flareTrail 10s ease-in-out infinite;
+  animation: flareTrail 30s ease-in-out infinite;
 }
 .flare-trail-dusk {
   background: radial-gradient(ellipse 90% 60% at 35% 50%, #b85a80 0%, #6a3a55 35%, transparent 70%);
   top: 0%; left: -5%;
-  animation: flareTrail 12s ease-in-out infinite reverse;
+  animation: flareTrail 35s ease-in-out infinite reverse;
 }
 .flare-trail-honey {
   background: radial-gradient(ellipse 90% 60% at 35% 50%, #f0b96a 0%, #b87a3a 35%, transparent 70%);
   top: 0%; left: -5%;
-  animation: flareTrail 11s ease-in-out infinite;
+  animation: flareTrail 32s ease-in-out infinite;
 }
 
 /* ─── Flare: wide soft wash of color ─── */
@@ -90,17 +90,17 @@ body {
 .flare-wash-warm {
   background: radial-gradient(ellipse at 45% 50%, #d28865 0%, #6b2a1a 45%, transparent 75%);
   top: -10%; left: -15%;
-  animation: flareWash 14s ease-in-out infinite;
+  animation: flareWash 40s ease-in-out infinite;
 }
 .flare-wash-dusk {
   background: radial-gradient(ellipse at 45% 50%, #8e4a6a 0%, #3d1f35 45%, transparent 75%);
   top: -10%; left: -15%;
-  animation: flareWash 16s ease-in-out infinite reverse;
+  animation: flareWash 45s ease-in-out infinite reverse;
 }
 .flare-wash-honey {
   background: radial-gradient(ellipse at 45% 50%, #e0a040 0%, #6b3f1a 45%, transparent 75%);
   top: -10%; left: -15%;
-  animation: flareWash 15s ease-in-out infinite;
+  animation: flareWash 42s ease-in-out infinite;
 }
 
 /* film grain over hero (SVG noise pattern) */
@@ -116,7 +116,7 @@ body {
 @keyframes flareCore { 
   0%   { transform: translate(-170px, 300px); }
   20%  { transform: translate(80px, 250px); }
-  40%  { transform: translate(170px, 480px); }
+  40%  { transform: translate(100px, 280px); }
   60%  { transform: translate(-150px, 200px); }
   80%  { transform: translate(100px, -80px); }
   100% { transform: translate(-170px, 300px); }
