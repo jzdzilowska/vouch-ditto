@@ -1,70 +1,236 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import GrainOverlay from "@/components/GrainOverlay";
 
-export default function HomePage() {
+const WHISPERS = [
+  "she laughs at her own jokes",
+  "loyal to a fault",
+  "the one who texts back immediately",
+  "horrible taste in movies, perfect taste in people",
+  "makes strangers feel like old friends",
+  "never splits the check — always just pays",
+  "will absolutely cry at your wedding",
+  "sends voice notes instead of texts",
+  "remembers how you take your coffee",
+  "the friend everyone secretly wants to date",
+  "talks with her hands",
+  "always the last one to leave",
+];
+
+const SUBTITLE = "let them write your dating profile.";
+
+function useTypewriter(text: string, speed = 40, startDelay = 1200) {
+  const [displayed, setDisplayed] = useState("");
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const delayTimer = setTimeout(() => setStarted(true), startDelay);
+    return () => clearTimeout(delayTimer);
+  }, [startDelay]);
+
+  useEffect(() => {
+    if (!started) return;
+    if (displayed.length >= text.length) return;
+
+    const timer = setTimeout(() => {
+      setDisplayed(text.slice(0, displayed.length + 1));
+    }, speed);
+    return () => clearTimeout(timer);
+  }, [started, displayed, text, speed]);
+
+  return displayed;
+}
+
+function FloatingWhispers() {
+  const configs = useMemo(
+    () =>
+      WHISPERS.map((text, i) => ({
+        text,
+        x: `${5 + ((i * 37 + 13) % 80)}%`,
+        y: `${8 + ((i * 23 + 7) % 75)}%`,
+        size: 0.7 + (i % 4) * 0.15,
+        opacity: 0.08 + (i % 5) * 0.04,
+        duration: 6 + (i % 5) * 2,
+        delay: i * 0.4,
+        drift: 12 + (i % 3) * 8,
+      })),
+    []
+  );
+
   return (
-    <main className="relative min-h-screen flex flex-col overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {configs.map(({ text, x, y, size, opacity, duration, delay, drift }, i) => (
+        <motion.div
+          key={i}
+          className="absolute text-typewriter italic whitespace-nowrap"
+          style={{
+            left: x,
+            top: y,
+            fontSize: `${size}rem`,
+            opacity: 0,
+          }}
+          animate={{
+            y: [0, -drift, 0],
+            opacity: [0, opacity, opacity, 0],
+          }}
+          transition={{
+            duration,
+            delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          &ldquo;{text}&rdquo;
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+const STEPS = [
+  {
+    n: "01",
+    title: "you show up",
+    body: "add a few photos. that\u2019s all you do.",
+  },
+  {
+    n: "02",
+    title: "they speak for you",
+    body: "send a link to 2\u20133 friends. they answer three questions.",
+  },
+  {
+    n: "03",
+    title: "you become discoverable",
+    body: "AI stitches their words into a profile that sounds like you.",
+  },
+];
+
+export default function HomePage() {
+  const subtitle = useTypewriter(SUBTITLE);
+
+  return (
+    <main className="relative overflow-hidden">
       <div className="gradient-bg" />
       <GrainOverlay />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
+      {/* ── Section 1: The Whisper ── */}
+      <section className="relative z-10 min-h-screen flex flex-col">
         <header className="px-6 py-6 flex items-center justify-between max-w-5xl mx-auto w-full">
-          <div className="font-display italic text-2xl tracking-tight text-white/90">vouch</div>
+          <div className="font-display italic text-2xl tracking-tight text-white/90">
+            vouch
+          </div>
           <nav className="flex items-center gap-3">
-            <Link href="/login" className="btn-ghost text-sm">Log in</Link>
-            <Link href="/signup" className="btn-primary text-sm">Get started</Link>
+            <Link href="/login" className="btn-ghost text-sm">
+              Log in
+            </Link>
           </nav>
         </header>
 
-        <section className="flex-1 flex items-center justify-center px-6">
-          <div className="max-w-2xl text-center">
-            <p className="text-typewriter text-white/40 text-xs tracking-[0.25em] uppercase mb-8">
-              A different kind of dating app
-            </p>
+        <div className="flex-1 relative flex items-center justify-center px-6">
+          <FloatingWhispers />
 
-            <h1 className="h-display text-ink mb-6">
-              Let your friends{" "}
-              <br className="hidden md:block" />
-              write your <em className="text-blush">profile.</em>
+          <motion.div
+            className="relative z-10 text-center max-w-xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <h1 className="text-display text-4xl md:text-[3.4rem] leading-[1.1] text-ink mb-6">
+              What do your friends say about you...{" "}
+              <span className="text-blush">when you&rsquo;re not around?</span>
             </h1>
 
-            <p className="text-typewriter text-white/50 text-sm md:text-base leading-relaxed mb-12 max-w-md mx-auto">
-              You upload the photos. Three friends answer three questions
-              about you. Our model stitches it into a profile that actually
-              sounds like <em className="text-white/70">you</em> — because they know you.
+            <p className="text-typewriter text-white/40 text-sm md:text-base h-8 mb-10">
+              {subtitle}
+              <span className="inline-block w-[2px] h-[1em] bg-white/40 ml-0.5 align-middle animate-pulse" />
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/signup" className="btn-primary">Build my profile</Link>
-              <a href="#how" className="btn-ghost text-white/50 hover:text-white/80">
-                How it works ↓
-              </a>
-            </div>
-          </div>
-        </section>
+            <Link
+              href="/signup"
+              className="btn-primary text-sm md:text-base shadow-[0_0_30px_rgba(255,255,255,0.08)]"
+            >
+              Let them tell your story
+            </Link>
+          </motion.div>
+        </div>
 
-        <section id="how" className="px-6 pb-24 pt-16 max-w-5xl mx-auto w-full">
-          <div className="grid md:grid-cols-3 gap-4">
-            {[
-              { n: "01", t: "Sign up", b: "Add your photos and a few basics. Takes a minute." },
-              { n: "02", t: "Send a link", b: "Text the invite to 2–3 friends. They answer 3 questions." },
-              { n: "03", t: "Approve & go live", b: "Edit the AI-stitched profile, then you're discoverable." },
-            ].map((s) => (
-              <div key={s.n} className="card p-6">
-                <div className="text-typewriter text-accent2 text-xs tracking-widest mb-4">{s.n}</div>
-                <div className="font-display italic text-xl text-ink mb-2">{s.t}</div>
-                <p className="text-typewriter text-white/40 text-sm">{s.b}</p>
+        <motion.div
+          className="pb-10 text-center"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <span className="text-white/20 text-xs text-typewriter tracking-widest">
+            scroll
+          </span>
+        </motion.div>
+      </section>
+
+      {/* ── Section 2: The Steps ── */}
+      <section className="relative z-10 min-h-screen flex items-center justify-center px-6 py-24">
+        <div className="max-w-lg w-full space-y-16">
+          {STEPS.map((step, i) => (
+            <motion.div
+              key={step.n}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{
+                duration: 0.8,
+                delay: i * 0.15,
+                ease: "easeOut",
+              }}
+            >
+              <div className="flex items-baseline gap-4 mb-2">
+                <span className="text-typewriter text-accent2 text-xs tracking-widest">
+                  {step.n}
+                </span>
+                <span className="font-display italic text-2xl md:text-3xl text-ink">
+                  {step.title}
+                </span>
               </div>
-            ))}
-          </div>
-        </section>
+              <p className="text-typewriter text-white/35 text-sm pl-10">
+                {step.body}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-        <footer className="px-6 py-8 text-center">
-          <p className="text-typewriter text-white/20 text-xs tracking-widest">
-            vouch · built as a demo
+      {/* ── Section 3: The Close ── */}
+      <section className="relative z-10 min-h-[70vh] flex flex-col items-center justify-center px-6 py-24">
+        <motion.div
+          className="text-center max-w-lg"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.2 }}
+        >
+          <p className="text-display text-2xl md:text-4xl text-ink leading-snug mb-12">
+            &ldquo;The best things said about you are said by someone else.&rdquo;
+          </p>
+
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/signup" className="btn-primary">
+              Get started
+            </Link>
+            <Link href="/login" className="btn-ghost text-white/50 hover:text-white/80">
+              Log in
+            </Link>
+          </div>
+        </motion.div>
+
+        <footer className="mt-auto pt-16 pb-8 text-center">
+          <div className="font-display italic text-lg text-white/20 mb-2">
+            vouch
+          </div>
+          <p className="text-typewriter text-white/10 text-[0.6rem] tracking-widest">
+            built as a demo
           </p>
         </footer>
-      </div>
+      </section>
     </main>
   );
 }
