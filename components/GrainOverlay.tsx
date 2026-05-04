@@ -2,39 +2,39 @@
 
 import { useEffect, useRef } from "react";
 
-const GRAIN_SIZE = 1000;
-const FPS = 14;
-
-export default function GrainOverlay({ opacity = 0.14 }: { opacity?: number }) {
+export default function GrainOverlay({ opacity = 0.15 }: { opacity?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.ceil(window.innerWidth * dpr);
+    const h = Math.ceil(window.innerHeight * dpr);
+
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    canvas.width = GRAIN_SIZE;
-    canvas.height = GRAIN_SIZE;
-
-    const imageData = ctx.createImageData(GRAIN_SIZE, GRAIN_SIZE);
-    const pixels = imageData.data;
+    const imageData = ctx.createImageData(w, h);
+    const buf32 = new Uint32Array(imageData.data.buffer);
     let frame: number;
 
     function draw() {
-      for (let i = 0; i < pixels.length; i += 4) {
-        const v = Math.random() * 255;
-        pixels[i] = v;
-        pixels[i + 1] = v;
-        pixels[i + 2] = v;
-        pixels[i + 3] = 255;
+      for (let i = 0; i < buf32.length; i++) {
+        const v = (Math.random() * 255) | 0;
+        buf32[i] = (255 << 24) | (v << 16) | (v << 8) | v;
       }
       ctx!.putImageData(imageData, 0, 0);
     }
 
     let last = 0;
-    const interval = 1000 / FPS;
+    const interval = 1000 / 24;
 
     function loop(time: number) {
       frame = requestAnimationFrame(loop);
@@ -52,12 +52,8 @@ export default function GrainOverlay({ opacity = 0.14 }: { opacity?: number }) {
       ref={canvasRef}
       aria-hidden
       style={{
-        // Absolute (not fixed) so the grain stays inside whatever parent
-        // sets `position: relative` — i.e. inside the phone screen on desktop.
         position: "absolute",
         inset: 0,
-        width: "100%",
-        height: "100%",
         zIndex: 1,
         pointerEvents: "none",
         opacity,

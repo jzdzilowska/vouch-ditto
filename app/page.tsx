@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import HeroBackdrop from "@/components/HeroBackdrop";
+import GrainOverlay from "@/components/GrainOverlay";
 import Chip, { PREMISE_CHIPS } from "@/components/Chip";
 
 // Landing — ported from design bundle. Sensual warm hero, chip row,
@@ -9,6 +12,7 @@ export default function HomePage() {
   return (
     <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] overflow-hidden bg-black">
       <HeroBackdrop variant="warm" />
+      <GrainOverlay opacity={0.2} />
 
       {/* Top chip row + intimacy copy */}
       <div className="absolute left-0 right-0 px-[22px]" style={{ top: 78 }}>

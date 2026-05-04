@@ -1,5 +1,3 @@
-// The sensual warm/dusk/honey hero gradient + grain + fades, used by
-// the landing page and the discover profile photos.
 export default function HeroBackdrop({
   variant = "warm",
   showAnnotation = false,
@@ -11,7 +9,11 @@ export default function HeroBackdrop({
 }) {
   return (
     <div className="hero-photo">
-      <div className={`hero-art hero-${variant}`} />
+      <div className="hero-base" />
+      {/* Light leak: bright core + stretched trailing layers */}
+      <div className={`flare-core flare-core-${variant}`} />
+      <div className={`flare-trail flare-trail-${variant}`} />
+      <div className={`flare-wash flare-wash-${variant}`} />
       <div className="hero-grain" />
       <div className="top-fade" />
       <div className="bottom-fade" />
