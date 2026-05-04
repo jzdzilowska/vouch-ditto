@@ -1,9 +1,11 @@
 import Link from "next/link";
+import GrainOverlay from "@/components/GrainOverlay";
 
 export default function HomePage() {
   return (
     <main className="relative min-h-screen flex flex-col overflow-hidden">
       <div className="gradient-bg" />
+      <GrainOverlay />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="px-6 py-6 flex items-center justify-between max-w-5xl mx-auto w-full">

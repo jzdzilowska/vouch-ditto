@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import GrainOverlay from "@/components/GrainOverlay";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function SignupPage() {
   return (
     <main className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="gradient-bg" />
+      <GrainOverlay />
 
       <div className="relative z-10 w-full max-w-sm px-6">
         <div className="text-center mb-10">
