@@ -9,3 +9,7 @@ out
 .vercel
 .turbo
 next-env.d.ts
+
+# local-only design reference (Claude Design handoff bundle)
+.design-ref
+.testwrite

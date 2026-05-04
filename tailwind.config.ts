@@ -8,19 +8,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#0B0B0F",
+        bg: "#0a0a0d",
         card: "rgba(255,255,255,0.06)",
         "card-solid": "#15151C",
-        ink: "#F4F1EA",
+        ink: "#f4f1ea",
         muted: "#A8A29E",
-        accent: "#C8553D",
-        accent2: "#D4A574",
-        warm: "#E8C4A0",
-        blush: "#D4908A",
+        // Warm sensual palette — mirrors the .hero-* gradients.
+        accent: "#d28865",   // copper
+        accent2: "#e8a575",  // honey
+        warm: "#e8c4a0",
+        blush: "#d4908a",
+        dusk: "#8e4a6a",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "-apple-system", "Helvetica", "Arial", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "Cambria", "Times New Roman", "serif"],
+        italic: ["var(--font-italic)", "Georgia", "serif"],
         typewriter: ["var(--font-typewriter)", "Courier New", "monospace"],
       },
       animation: {

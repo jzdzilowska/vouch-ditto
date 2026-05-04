@@ -4,6 +4,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProfileCard, { type ProfileCardData } from "@/components/ProfileCard";
 
+// Swipe deck — full-bleed card stack with "pass" / "vouch back" actions
+// matching the design's ProfileScreen ActionButtons (pill-shaped,
+// white primary + glass-blur secondary).
 export default function Deck({ cards: initial }: { cards: ProfileCardData[] }) {
   const [cards, setCards] = useState(initial);
   const [pendingDir, setPendingDir] = useState<"like" | "pass" | null>(null);
@@ -14,8 +17,9 @@ export default function Deck({ cards: initial }: { cards: ProfileCardData[] }) {
     if (!top || pendingDir) return;
     setPendingDir(direction);
     const targetId = top.id;
+    const targetName = top.display_name;
 
-    // Optimistic — pop card immediately, animation handles by AnimatePresence
+    // Optimistic — pop card immediately
     setCards((arr) => arr.slice(1));
 
     try {
@@ -26,21 +30,32 @@ export default function Deck({ cards: initial }: { cards: ProfileCardData[] }) {
       });
       const j = await res.json().catch(() => ({}));
       if (j?.matched) {
-        setMatchToast(`it's a match with ${top.display_name} 💌`);
+        setMatchToast(`a match with ${targetName}.`);
         setTimeout(() => setMatchToast(null), 3500);
       }
     } catch {
-      /* swallow — kept the optimistic UI */
+      /* keep optimistic UI */
     } finally {
       setPendingDir(null);
     }
   }
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Card stack */}
-      <div className="relative flex-1 mb-4 min-h-[440px]">
+    <>
+      {/* Card stack — fills the screen */}
+      <div className="absolute inset-0">
         <AnimatePresence mode="popLayout">
+          {/* Peek at the next card behind */}
+          {cards[1] && (
+            <motion.div
+              key={`peek-${cards[1].id}`}
+              initial={{ scale: 0.92, opacity: 0.5 }}
+              animate={{ scale: 0.94, opacity: 0.6 }}
+              className="absolute inset-0 -z-10"
+            >
+              <ProfileCard profile={cards[1]} />
+            </motion.div>
+          )}
           {top && (
             <motion.div
               key={top.id}
@@ -58,24 +73,16 @@ export default function Deck({ cards: initial }: { cards: ProfileCardData[] }) {
               <ProfileCard profile={top} />
             </motion.div>
           )}
-          {/* Peek at the next card behind */}
-          {cards[1] && (
-            <motion.div
-              key={`peek-${cards[1].id}`}
-              initial={{ scale: 0.92, opacity: 0.4 }}
-              animate={{ scale: 0.94, opacity: 0.6 }}
-              className="absolute inset-0 -z-10"
-            >
-              <ProfileCard profile={cards[1]} />
-            </motion.div>
-          )}
         </AnimatePresence>
       </div>
 
-      {/* Action bar */}
-      <div className="flex items-center justify-center gap-6 pb-4">
-        <ActionButton kind="pass" onClick={() => decide("pass")} disabled={!top || !!pendingDir} />
-        <ActionButton kind="like" onClick={() => decide("like")} disabled={!top || !!pendingDir} />
+      {/* Action bar — over the card, glass + white */}
+      <div
+        className="absolute z-40 flex justify-center gap-3.5"
+        style={{ left: 0, right: 0, bottom: 44 }}
+      >
+        <ActionButton label="pass" onClick={() => decide("pass")} disabled={!top || !!pendingDir} />
+        <ActionButton label="vouch back" primary onClick={() => decide("like")} disabled={!top || !!pendingDir} />
       </div>
 
       {/* Match toast */}
@@ -85,32 +92,59 @@ export default function Deck({ cards: initial }: { cards: ProfileCardData[] }) {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
-            className="fixed bottom-6 inset-x-0 mx-auto w-fit bg-accent text-white px-5 py-3 rounded-full shadow-2xl text-sm font-semibold"
+            className="absolute z-50 px-5 py-3 rounded-full"
+            style={{
+              bottom: 130,
+              left: "50%",
+              transform: "translateX(-50%)",
+              background: "rgba(168,216,168,0.16)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(168,216,168,0.35)",
+              color: "#d6f0d6",
+              fontFamily: "var(--font-italic), 'Instrument Serif', serif",
+              fontStyle: "italic",
+              fontSize: 18,
+            }}
           >
             {matchToast}
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
 
 function ActionButton({
-  kind, onClick, disabled,
-}: { kind: "pass" | "like"; onClick: () => void; disabled?: boolean }) {
-  const isLike = kind === "like";
+  label,
+  primary,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  primary?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      aria-label={isLike ? "Like" : "Pass"}
-      className={`w-16 h-16 rounded-full grid place-items-center text-2xl font-light transition active:scale-95 disabled:opacity-30 ${
-        isLike
-          ? "bg-accent text-white shadow-[0_8px_24px_rgba(255,90,120,.35)]"
-          : "bg-card text-ink/80 border border-white/10"
-      }`}
+      className="rounded-full transition active:scale-[0.97] disabled:opacity-40"
+      style={{
+        padding: "15px 28px",
+        minWidth: 130,
+        background: primary ? "#fff" : "rgba(0,0,0,0.4)",
+        backdropFilter: primary ? "none" : "blur(8px)",
+        border: primary ? "none" : "1px solid rgba(255,255,255,0.4)",
+        color: primary ? "#111" : "#fff",
+        fontFamily: "var(--font-sans)",
+        fontSize: 14,
+        fontWeight: 500,
+        letterSpacing: "-0.005em",
+        cursor: disabled ? "not-allowed" : "pointer",
+      }}
     >
-      {isLike ? "♥" : "✕"}
+      {label}
     </button>
   );
 }

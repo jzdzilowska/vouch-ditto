@@ -1,134 +1,239 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
+// VouchExcerpt — what each friend's submission boils down to inline.
+// Built from a friend_submission row: friend_name + relationship + a
+// quote pulled from one of the three Q&A fields (q1/q2/q3).
+export type VouchExcerpt = {
+  text: string;
+  author: string;
+  relation: string | null;
+};
 
 export type ProfileCardData = {
   id: string;
   display_name: string;
   age: number | null;
   city: string | null;
-  bio: string | null;
+  bio: string | null; // approved AI bio (used as a default first vouch text)
   photo_urls: string[];
-  vouchedBy?: string[]; // first names of friends who submitted
+  vouches?: VouchExcerpt[];
+  vouchedBy?: string[]; // first names list (kept for compatibility)
+  occupation?: string | null;
 };
 
-// A single profile card shown in the discover feed (or as a self-preview).
-// Internal horizontal swiper through the photos; bio + name overlaid on top.
-// The card itself is positionless — wrap it in a deck for stack/swipe-to-decide.
-export default function ProfileCard({ profile, expanded = false }: { profile: ProfileCardData; expanded?: boolean }) {
+// Profile card — ported from the design bundle's ProfileScreen.
+// Full-bleed warm photo carousel with Stories-style segments at top,
+// name + meta in Fraunces, and the friend-vouch as the hero copy
+// (Instrument Serif italic). Tap left/right to navigate photos; use
+// the dot pager to switch between vouches.
+export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
   const [photoIdx, setPhotoIdx] = useState(0);
-  const [showFullBio, setShowFullBio] = useState(expanded);
+  const [vouchIdx, setVouchIdx] = useState(0);
 
   const photos = profile.photo_urls.length ? profile.photo_urls : [];
-  const total = photos.length;
+  const totalPhotos = Math.max(1, photos.length);
   const photo = photos[photoIdx] ?? null;
 
-  function next() { if (total) setPhotoIdx((i) => (i + 1) % total); }
-  function prev() { if (total) setPhotoIdx((i) => (i - 1 + total) % total); }
+  // If there are no friend vouches yet, fall back to the AI-stitched bio.
+  const vouches: VouchExcerpt[] =
+    profile.vouches && profile.vouches.length > 0
+      ? profile.vouches
+      : profile.bio
+      ? [{ text: profile.bio, author: "vouch", relation: null }]
+      : [];
+  const vouch = vouches[vouchIdx] ?? null;
 
-  function onDragEnd(_: unknown, info: { offset: { x: number }; velocity: { x: number } }) {
-    const swipe = Math.abs(info.offset.x) * info.velocity.x;
-    if (info.offset.x < -60 || swipe < -10000) next();
-    else if (info.offset.x > 60 || swipe > 10000) prev();
+  function tapLeft() {
+    setPhotoIdx((i) => Math.max(0, i - 1));
+  }
+  function tapRight() {
+    setPhotoIdx((i) => Math.min(totalPhotos - 1, i + 1));
   }
 
   return (
-    <div className="relative w-full max-w-md mx-auto aspect-[3/4] rounded-3xl overflow-hidden bg-card border border-white/5 shadow-2xl select-none">
-      {/* Photo (animated on idx change) */}
-      <AnimatePresence initial={false} mode="popLayout">
-        <motion.div
-          key={photoIdx}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.12}
-          onDragEnd={onDragEnd}
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.2 }}
-          className="absolute inset-0"
-        >
-          {photo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={photo}
-              alt={profile.display_name}
-              className="w-full h-full object-cover pointer-events-none"
-              draggable={false}
-            />
-          ) : (
-            <div className="w-full h-full grid place-items-center text-muted">no photo</div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+    <div className="relative w-full h-full bg-black overflow-hidden select-none" style={{ minHeight: 600 }}>
+      {/* Photo */}
+      {photo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={photo}
+          alt={profile.display_name}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          draggable={false}
+        />
+      ) : (
+        <div className="absolute inset-0 hero-photo">
+          <div className="hero-art hero-warm" />
+          <div className="hero-grain" />
+        </div>
+      )}
 
-      {/* Tap zones for prev/next photo (don't block drag — they sit above the photo only) */}
-      {total > 1 && (
+      {/* Stories-style photo segments */}
+      <div
+        className="absolute flex gap-1 z-10 pointer-events-none"
+        style={{ top: 18, left: 14, right: 14 }}
+      >
+        {Array.from({ length: totalPhotos }).map((_, i) => (
+          <div
+            key={i}
+            className="flex-1 h-[2px] rounded-full bg-white/25 overflow-hidden"
+          >
+            <div
+              className="h-full bg-white transition-[width] duration-400 ease-out"
+              style={{ width: i <= photoIdx ? "100%" : "0%" }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Tap zones for photo navigation */}
+      {totalPhotos > 1 && (
         <>
           <button
             aria-label="Previous photo"
-            onClick={prev}
-            className="absolute inset-y-0 left-0 w-1/2 z-10"
+            onClick={tapLeft}
+            className="absolute z-20"
+            style={{ top: 40, left: 0, width: "40%", bottom: 380 }}
           />
           <button
             aria-label="Next photo"
-            onClick={next}
-            className="absolute inset-y-0 right-0 w-1/2 z-10"
+            onClick={tapRight}
+            className="absolute z-20"
+            style={{ top: 40, right: 0, width: "40%", bottom: 380 }}
           />
         </>
       )}
 
-      {/* Photo segment indicator (Instagram Stories style) */}
-      {total > 1 && (
-        <div className="absolute top-3 left-3 right-3 z-20 flex gap-1 pointer-events-none">
-          {photos.map((_, i) => (
-            <div key={i} className="flex-1 h-0.5 rounded-full bg-white/20 overflow-hidden">
-              <div
-                className={`h-full bg-white transition-all duration-200 ${i < photoIdx ? "w-full" : i === photoIdx ? "w-full" : "w-0"}`}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Bottom fade */}
+      <div
+        className="absolute left-0 right-0 bottom-0 pointer-events-none z-[2]"
+        style={{
+          height: 540,
+          background:
+            "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.92) 70%)",
+        }}
+      />
 
-      {/* Bottom gradient + bio overlay */}
-      <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/55 to-transparent pt-24 px-5 pb-5 pointer-events-none">
-        <div className="pointer-events-auto">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-3xl font-display tracking-tight">{profile.display_name}</span>
+      {/* Bottom stack — name + meta, divider, vouch quote, dot pager */}
+      <div
+        className="absolute z-30 flex flex-col gap-4"
+        style={{ left: 22, right: 22, bottom: 28 }}
+      >
+        {/* name + meta */}
+        <div>
+          <div
+            className="text-white"
+            style={{
+              fontFamily: "var(--font-display), 'Fraunces', serif",
+              fontWeight: 300,
+              fontSize: 42,
+              letterSpacing: "-0.03em",
+              lineHeight: 0.95,
+            }}
+          >
+            {profile.display_name}
             {profile.age != null && (
-              <span className="text-2xl text-ink/80 font-light">{profile.age}</span>
+              <span style={{ fontWeight: 200, opacity: 0.8, marginLeft: 8 }}>
+                {profile.age}
+              </span>
             )}
           </div>
-          {profile.city && (
-            <div className="text-xs text-ink/70 mb-2">{profile.city}</div>
-          )}
-
-          <p
-            className={`text-[15px] leading-snug text-ink/95 cursor-pointer ${
-              showFullBio ? "" : "line-clamp-3"
-            }`}
-            onClick={() => setShowFullBio((v) => !v)}
+          <div
+            className="mt-1.5 text-white/60"
+            style={{
+              fontFamily: "var(--font-typewriter), monospace",
+              fontSize: 10,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+            }}
           >
-            {profile.bio || <span className="text-muted italic">No bio yet.</span>}
-          </p>
-
-          {profile.vouchedBy && profile.vouchedBy.length > 0 && (
-            <div className="mt-3 text-[11px] uppercase tracking-widest text-accent/90 font-semibold flex items-center gap-2">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent" />
-              vouched by {formatNames(profile.vouchedBy)}
-            </div>
-          )}
+            {[
+              profile.city,
+              profile.occupation,
+              `${profile.vouches?.length ?? 0} ${
+                (profile.vouches?.length ?? 0) === 1 ? "vouch" : "vouches"
+              }`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </div>
         </div>
+
+        {/* divider */}
+        <div className="h-px bg-white/10" />
+
+        {/* vouch quote */}
+        {vouch && (
+          <div>
+            {/* attribution chip */}
+            <div
+              className="inline-flex items-center gap-2 px-[11px] py-[5px] rounded-full mb-3 backdrop-blur-md"
+              style={{
+                border: "1px solid rgba(255,255,255,0.45)",
+                background: "rgba(255,255,255,0.04)",
+                fontFamily: "var(--font-typewriter), monospace",
+                fontSize: 9.5,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#fff",
+              }}
+            >
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-white" />
+              vouched by {vouch.author}
+            </div>
+
+            <div
+              className="text-white"
+              style={{
+                fontFamily: "var(--font-italic), 'Instrument Serif', serif",
+                fontStyle: "italic",
+                fontWeight: 400,
+                fontSize: 18,
+                lineHeight: 1.3,
+                letterSpacing: "-0.005em",
+              }}
+            >
+              {vouch.text}
+            </div>
+
+            {vouch.relation && (
+              <div
+                className="mt-2 text-white/50"
+                style={{
+                  fontFamily: "var(--font-typewriter), monospace",
+                  fontSize: 9,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                — {vouch.author}, {vouch.relation}
+              </div>
+            )}
+
+            {/* dot pager */}
+            {vouches.length > 1 && (
+              <div className="flex gap-1.5 mt-3.5">
+                {vouches.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setVouchIdx(i)}
+                    className="rounded-full transition-all duration-300 border-0 p-0 cursor-pointer"
+                    style={{
+                      width: i === vouchIdx ? 22 : 6,
+                      height: 6,
+                      background:
+                        i === vouchIdx ? "#fff" : "rgba(255,255,255,0.32)",
+                    }}
+                    aria-label={`Vouch ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
-}
-
-function formatNames(names: string[]): string {
-  const first = names.slice(0, 3);
-  if (first.length === 1) return first[0];
-  if (first.length === 2) return `${first[0]} & ${first[1]}`;
-  return `${first[0]}, ${first[1]} & ${first[2]}`;
 }

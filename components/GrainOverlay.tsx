@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const GRAIN_SIZE = 512;
+const GRAIN_SIZE = 1000;
 const FPS = 14;
 
 export default function GrainOverlay({ opacity = 0.14 }: { opacity?: number }) {
@@ -52,7 +52,9 @@ export default function GrainOverlay({ opacity = 0.14 }: { opacity?: number }) {
       ref={canvasRef}
       aria-hidden
       style={{
-        position: "fixed",
+        // Absolute (not fixed) so the grain stays inside whatever parent
+        // sets `position: relative` — i.e. inside the phone screen on desktop.
+        position: "absolute",
         inset: 0,
         width: "100%",
         height: "100%",

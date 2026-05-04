@@ -92,119 +92,222 @@ export default function OnboardingForm({ userEmail }: { userEmail: string }) {
   }
 
   return (
-    <main className="min-h-screen px-6 py-10 max-w-xl mx-auto">
-      <div className="mb-8">
-        <div className="text-xs text-muted">{userEmail}</div>
-        <h1 className="text-3xl font-display tracking-tight mt-1">Set up your profile</h1>
-        <div className="flex gap-2 mt-4">
-          <div className={`h-1 flex-1 rounded ${step >= 1 ? "bg-accent" : "bg-white/10"}`} />
-          <div className={`h-1 flex-1 rounded ${step >= 2 ? "bg-accent" : "bg-white/10"}`} />
+    <main className="phone-edge-to-edge relative w-full min-h-[100dvh] bg-[#0c0a09] text-ink overflow-hidden">
+      <div className="relative z-[3] flex flex-col px-[26px]" style={{ paddingTop: 70, paddingBottom: 30, minHeight: "100dvh" }}>
+        <div className="eyebrow" style={{ marginTop: 24 }}>
+          step {step} of 4 · {step === 1 ? "photos" : "basics"}
         </div>
-      </div>
 
-      {step === 1 && (
-        <section>
-          <h2 className="text-xl font-semibold mb-1">Add {MIN_PHOTOS}–{MAX_PHOTOS} photos</h2>
-          <p className="text-muted text-sm mb-4">Pick a great main shot. The first photo becomes your hero.</p>
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {photos.map((p, i) => (
-              <div key={p.path} className="relative aspect-[3/4] bg-card rounded-xl overflow-hidden border border-white/5">
-                <Image src={p.url} alt="" fill sizes="200px" className="object-cover" />
+        {step === 1 && (
+          <>
+            <h1
+              className="mt-3.5 text-white"
+              style={{
+                fontFamily: "var(--font-display), 'Fraunces', serif",
+                fontWeight: 300,
+                fontSize: 34,
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Show us how{" "}
+              <em
+                style={{
+                  fontFamily: "var(--font-italic), 'Instrument Serif', serif",
+                  fontWeight: 400,
+                  fontStyle: "italic",
+                }}
+              >
+                you actually look
+              </em>
+              .
+            </h1>
+            <p
+              className="mt-3 text-white/55"
+              style={{ fontSize: 13.5, lineHeight: 1.5 }}
+            >
+              {MIN_PHOTOS}–{MAX_PHOTOS} photos. The first one becomes your hero.
+            </p>
+
+            <div className="grid grid-cols-3 gap-2 mt-6">
+              {photos.map((p, i) => (
+                <div
+                  key={p.path}
+                  className="relative aspect-[3/4] rounded-xl overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <Image src={p.url} alt="" fill sizes="200px" className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(i)}
+                    className="absolute top-1.5 right-1.5 bg-black/60 backdrop-blur rounded-full text-xs w-6 h-6 grid place-items-center"
+                    aria-label="remove"
+                  >
+                    ×
+                  </button>
+                  {i === 0 && (
+                    <div
+                      className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full text-white"
+                      style={{
+                        background: "linear-gradient(135deg, #d28865 0%, #8a3e2a 100%)",
+                        fontFamily: "var(--font-typewriter), monospace",
+                        fontSize: 8,
+                        letterSpacing: "0.18em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      main
+                    </div>
+                  )}
+                </div>
+              ))}
+              {photos.length < MAX_PHOTOS && (
                 <button
                   type="button"
-                  onClick={() => removePhoto(i)}
-                  className="absolute top-1.5 right-1.5 bg-black/60 backdrop-blur rounded-full text-xs w-6 h-6 grid place-items-center"
-                  aria-label="remove"
+                  onClick={() => fileInput.current?.click()}
+                  className="aspect-[3/4] rounded-xl grid place-items-center text-white/45 text-sm"
+                  style={{ border: "1px dashed rgba(255,255,255,0.2)" }}
                 >
-                  ×
+                  {uploading ? "…" : "+"}
                 </button>
-                {i === 0 && <div className="absolute bottom-1.5 left-1.5 text-[10px] bg-accent rounded-full px-2 py-0.5">main</div>}
-              </div>
-            ))}
-            {photos.length < MAX_PHOTOS && (
-              <button
-                type="button"
-                onClick={() => fileInput.current?.click()}
-                className="aspect-[3/4] rounded-xl border-2 border-dashed border-white/15 grid place-items-center text-muted hover:border-white/30"
-              >
-                {uploading ? "Uploading…" : "+ Add"}
-              </button>
-            )}
-          </div>
-          <input
-            ref={fileInput}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-          {error && <div className="text-sm text-accent mb-3">{error}</div>}
-          <button
-            className="btn-primary w-full"
-            disabled={photos.length < MIN_PHOTOS}
-            onClick={() => setStep(2)}
-          >
-            Continue ({photos.length}/{MIN_PHOTOS} min)
-          </button>
-        </section>
-      )}
+              )}
+            </div>
 
-      {step === 2 && (
-        <section>
-          <h2 className="text-xl font-semibold mb-1">A few basics</h2>
-          <p className="text-muted text-sm mb-4">Your friends will write the rest.</p>
-          <div className="space-y-3">
-            <div>
-              <label className="label">Name</label>
-              <input className="input" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="label">Age</label>
-                <input className="input" type="number" min={18} max={99} value={age}
-                  onChange={(e) => setAge(e.target.value === "" ? "" : Number(e.target.value))} />
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleFiles(e.target.files)}
+            />
+
+            {error && (
+              <div className="text-sm text-accent mt-4" style={{ fontFamily: "var(--font-typewriter), monospace" }}>
+                {error}
               </div>
-              <div>
-                <label className="label">City</label>
-                <input className="input" value={city} onChange={(e) => setCity(e.target.value)} />
+            )}
+
+            <div className="flex-1 min-h-[20px]" />
+
+            <button
+              className="cta-pill mt-6"
+              disabled={photos.length < MIN_PHOTOS}
+              onClick={() => setStep(2)}
+            >
+              {photos.length < MIN_PHOTOS
+                ? `Add ${MIN_PHOTOS - photos.length} more to continue`
+                : "Continue"}
+            </button>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <h1
+              className="mt-3.5 text-white"
+              style={{
+                fontFamily: "var(--font-display), 'Fraunces', serif",
+                fontWeight: 300,
+                fontSize: 34,
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              The{" "}
+              <em
+                style={{
+                  fontFamily: "var(--font-italic), 'Instrument Serif', serif",
+                  fontWeight: 400,
+                  fontStyle: "italic",
+                }}
+              >
+                basics
+              </em>
+              .
+            </h1>
+            <p className="mt-3 text-white/55" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+              Your friends will write the rest.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-1">
+              <input
+                className="whisper-input"
+                placeholder="your name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+              />
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <input
+                  className="whisper-input"
+                  type="number"
+                  min={18}
+                  max={99}
+                  placeholder="age"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value === "" ? "" : Number(e.target.value))}
+                />
+                <input
+                  className="whisper-input"
+                  placeholder="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="label">Gender</label>
-                <select className="input" value={gender} onChange={(e) => setGender(e.target.value)}>
-                  <option value="">—</option>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <select
+                  className="whisper-input"
+                  style={{ paddingLeft: 0 }}
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
+                  <option value="">i am…</option>
                   <option>Woman</option>
                   <option>Man</option>
                   <option>Nonbinary</option>
                   <option>Prefer not to say</option>
                 </select>
-              </div>
-              <div>
-                <label className="label">Looking for</label>
-                <select className="input" value={lookingFor} onChange={(e) => setLookingFor(e.target.value)}>
-                  <option value="">—</option>
+                <select
+                  className="whisper-input"
+                  value={lookingFor}
+                  onChange={(e) => setLookingFor(e.target.value)}
+                >
+                  <option value="">looking for…</option>
                   <option>Women</option>
                   <option>Men</option>
                   <option>Everyone</option>
                 </select>
               </div>
             </div>
-            {error && <div className="text-sm text-accent">{error}</div>}
-            <div className="flex gap-2 pt-2">
-              <button className="btn-secondary flex-1" onClick={() => setStep(1)}>Back</button>
-              <button
-                className="btn-primary flex-1"
-                disabled={busy || !displayName}
-                onClick={submit}
-              >
+
+            {error && (
+              <div className="text-sm text-accent mt-4" style={{ fontFamily: "var(--font-typewriter), monospace" }}>
+                {error}
+              </div>
+            )}
+
+            <div className="flex-1 min-h-[20px]" />
+
+            <div className="flex flex-col gap-2 mt-6">
+              <button className="cta-pill" disabled={busy || !displayName} onClick={submit}>
                 {busy ? "Saving…" : "Create profile"}
               </button>
+              <button
+                onClick={() => setStep(1)}
+                className="cta-secondary"
+              >
+                ← back to photos
+              </button>
             </div>
-          </div>
-        </section>
-      )}
+          </>
+        )}
+      </div>
     </main>
   );
 }

@@ -173,7 +173,7 @@ export default function FriendChat({
   const disabled = typing || step === "submitting" || step === "done" || step === "intro";
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[#0B0B0F]">
+    <div className="phone-edge-to-edge w-full h-full min-h-[100dvh] flex flex-col bg-[#0B0B0F]">
       {/* iOS-style status header */}
       <div className="sticky top-0 z-10 backdrop-blur bg-[#0B0B0F]/80 border-b border-white/5">
         <div className="max-w-md mx-auto px-4 pt-3 pb-3 flex items-center gap-3">
