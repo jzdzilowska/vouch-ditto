@@ -20,9 +20,9 @@ export default function HomePage() {
       <HeroBackdrop />
       <GrainOverlay opacity={0.2} />
 
-      {/* Intimacy copy */}
-      <div className="absolute left-0 right-0 px-[22px]" style={{ top: 78 }}>
-        <div className="hero-copy max-w-[280px]">
+      {/* Centered CTA stack — copy + Get started, vertically and horizontally centered */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center">
+        <div className="hero-copy max-w-[300px]" style={{ textAlign: "center" }}>
           Let yourself be seen{" "}
           <em
             style={{
@@ -35,35 +35,19 @@ export default function HomePage() {
             for who you are.
           </em>
         </div>
-      </div>
-
-      {/* Wordmark — bottom-right, Peakr-style */}
-      <div
-        className="absolute text-right"
-        style={{ right: 22, bottom: 220 }}
-      >
-        <div
-          className="wordmark"
-          style={{ fontSize: 64 }}
-        >
-          vouch<sup>®</sup>
-        </div>
-      </div>
-
-      {/* CTA — white pill + tiny secondary link */}
-      <div
-        className="absolute left-[14px] right-[14px] flex flex-col items-center gap-[10px]"
-        style={{ bottom: 50 }}
-      >
         <Link href="/signup" className="cta-pill" aria-label="Get started">
-          <span className="cta-pill__hearts cta-pill__hearts--left" aria-hidden>
-            <HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon />
-          </span>
-          <span className="cta-pill__label">Get started</span>
-          <span className="cta-pill__hearts cta-pill__hearts--right" aria-hidden>
-            <HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon /><HeartIcon />
+          <span className="cta-pill__label">Are you ready?</span>
+          <span className="cta-pill__heart" aria-hidden>
+            <HeartIcon />
           </span>
         </Link>
+      </div>
+
+      {/* Wordmark — pinned to bottom-right corner */}
+      <div className="absolute" style={{ right: 22, bottom: 22 }}>
+        <div className="wordmark" style={{ fontSize: 48 }}>
+          vouch<sup>®</sup>
+        </div>
       </div>
     </main>
   );
