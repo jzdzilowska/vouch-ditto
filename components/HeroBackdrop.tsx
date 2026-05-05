@@ -1,9 +1,7 @@
 export default function HeroBackdrop({
-  variant = "warm",
   showAnnotation = false,
   annotation,
 }: {
-  variant?: "warm" | "dusk" | "honey" | "rose";
   showAnnotation?: boolean;
   annotation?: string;
 }) {
@@ -14,9 +12,9 @@ export default function HeroBackdrop({
         <div className="orb orb-amber-t2" />
         <div className="orb orb-amber-t1" />
         <div className="orb orb-amber" />
-        <div className="orb orb-indigo-t2" />
-        <div className="orb orb-indigo-t1" />
-        <div className="orb orb-indigo" />
+        <div className="orb orb-red-t2" />
+        <div className="orb orb-red-t1" />
+        <div className="orb orb-red" />
         <div className="orb orb-pink-t2" />
         <div className="orb orb-pink-t1" />
         <div className="orb orb-pink" />
