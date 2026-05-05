@@ -60,7 +60,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 npm run dev
 ```
 
-Open http://localhost:3000 → sign up → onboarding → dashboard → grab your invite link → open it in another browser/incognito to play the friend chat → back to dashboard → "Generate draft" → /review → "Approve & go live" → /discover.
+Open http://localhost:3000 → sign up → dashboard → grab your invite link → open it in another browser/incognito to play the friend chat → back to dashboard → "Generate draft" → /review → "Approve & go live" → /discover.
 
 ## 6. (Optional) Real SMS via Twilio
 
@@ -88,7 +88,6 @@ Already works out of the box. Visit `/admin/sms` to see what the mock provider w
 app/
   page.tsx                       # landing
   signup, login, auth/           # @supabase/ssr auth
-  onboarding/                    # photo upload + basics
   dashboard/                     # 3-step home + share link
   friend/[slug]/                 # iMessage-style chat (public)
   review/                        # edit & approve AI draft
@@ -115,6 +114,6 @@ middleware.ts                    # session refresh + protected routes
 ## Troubleshooting
 
 - **"new row violates row-level security policy" on photo upload** — make sure the `profile-photos` bucket exists and the storage policies in `0001_init.sql` ran. The folder name in the upload path must equal `auth.uid()`.
-- **/dashboard redirects to /onboarding forever** — your insert into `profiles` is failing silently. Open browser devtools → Network → look at the `/api/profile` POST response.
+- **/dashboard redirects home forever** — your insert into `profiles` is failing silently. Open browser devtools → Network → look at the `/api/profile` POST response.
 - **Synthesize returns "No friend submissions yet"** — the `/friend/[slug]` chat needs to complete at least one full submission first.
 - **Swipes don't create matches** — confirm trigger `swipes_maybe_match` exists in your DB (`select tgname from pg_trigger where tgname='swipes_maybe_match'`).

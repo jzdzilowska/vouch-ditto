@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function SignupPage() {
   const router = useRouter();
   const search = useSearchParams();
-  const next = search.get("next") || "/onboarding";
+  const next = search.get("next") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);

@@ -192,6 +192,165 @@ body {
 .cta-pill:active { opacity: 0.85; }
 .cta-pill:disabled { opacity: 0.32; cursor: not-allowed; }
 
+/* Modifier when CTA sits under the welcome form */
+.cta-pill--ready { margin-top: 11px; }
+
+/* ─── Stage: cross-fade between flow steps (intro → welcome → photos → basics) ─── */
+.cta-screen {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  opacity: 0;
+  transform: scale(0.92);
+  filter: blur(4px);
+  pointer-events: none;
+  transition: opacity 0.85s cubic-bezier(0.65, 0, 0.35, 1),
+              transform 0.85s cubic-bezier(0.34, 1.4, 0.5, 1),
+              filter 0.7s ease;
+}
+.cta-screen[data-active="true"] {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+/* ─── Welcome form ─── */
+.welcome-heading {
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  margin: 0 0 2px;
+}
+.welcome-heading em {
+  font-family: var(--font-italic), 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.welcome-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 260px;
+}
+
+.welcome-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  padding: 8px 0 4px;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.welcome-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+.welcome-input:focus { border-color: rgba(255, 255, 255, 0.85); }
+
+.welcome-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.welcome-select {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  padding-left: 2px;
+}
+.welcome-select option { background: #0a0a0d; color: #fff; }
+
+.cta-subcopy {
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: -4px 0 8px;
+}
+
+.cta-error {
+  color: #ff8aa8;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ─── Photo grid (inline onboarding step) ─── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin: 4px 0;
+}
+.photo-tile,
+.photo-add {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+.photo-tile { border: 1px solid rgba(255, 255, 255, 0.08); }
+.photo-add {
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 22px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.photo-add:hover { border-color: rgba(255, 255, 255, 0.45); color: #fff; }
+
+.photo-remove {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+.photo-main-badge {
+  position: absolute;
+  bottom: 4px; left: 4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d28865 0%, #8a3e2a 100%);
+  color: #fff;
+  font-family: var(--font-typewriter), monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 .cta-secondary {
   background: transparent;
   border: none;

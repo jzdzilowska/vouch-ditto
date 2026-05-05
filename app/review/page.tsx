@@ -17,7 +17,7 @@ export default async function ReviewPage() {
     .select("*")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (!profile) redirect("/onboarding");
+  if (!profile) redirect("/");
 
   const { data: subs } = await supabase
     .from("friend_submissions")

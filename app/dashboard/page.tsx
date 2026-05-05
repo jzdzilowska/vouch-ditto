@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!profile) redirect("/onboarding");
+  if (!profile) redirect("/");
 
   // Pull each submission so we can show the friend rows with names + status.
   const { data: submissions } = await supabase

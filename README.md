@@ -14,14 +14,13 @@ You sign up and upload photos. You text 2–3 friends a link. Each friend opens 
 
 ## How the flow works
 
-1. **Sign up** → `/signup` (email + password)
-2. **Onboard** → `/onboarding` — 2-step wizard, upload 3-6 photos and basic info; an `invite_slug` is generated
-3. **Dashboard** → `/dashboard` — copy the invite link or "Send via iMessage" (real `sms:` URL scheme prefills the user's Messages app)
-4. **Friend submits** → `/friend/[slug]` opens an iMessage-styled chat that walks the friend through 5 turns: name, relationship, then 3 questions
-5. **Synthesize** → `/api/synthesize` calls Claude with the latest 3 vouches and writes a `profile_drafts` row
-6. **Review** → `/review` — preview card, edit, regenerate, or approve
-7. **Discover** → `/discover` — swipeable card stack of other live profiles. Tap left/right halves to flip photos. Like/Pass buttons record swipes; a DB trigger creates a `matches` row on reciprocal likes
-8. **Demo SMS outbox** → `/admin/sms` — every text the (mock) provider would have sent
+1. **Sign up** → inline form on `/` (email + password) — also reachable via `/signup`
+2. **Dashboard** → `/dashboard` — copy the invite link or "Send via iMessage" (real `sms:` URL scheme prefills the user's Messages app)
+3. **Friend submits** → `/friend/[slug]` opens an iMessage-styled chat that walks the friend through 5 turns: name, relationship, then 3 questions
+4. **Synthesize** → `/api/synthesize` calls Claude with the latest 3 vouches and writes a `profile_drafts` row
+5. **Review** → `/review` — preview card, edit, regenerate, or approve
+6. **Discover** → `/discover` — swipeable card stack of other live profiles. Tap left/right halves to flip photos. Like/Pass buttons record swipes; a DB trigger creates a `matches` row on reciprocal likes
+7. **Demo SMS outbox** → `/admin/sms` — every text the (mock) provider would have sent
 
 ## Architecture notes
 
