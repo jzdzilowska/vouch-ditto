@@ -21,7 +21,7 @@ export default function HomePage() {
       <GrainOverlay opacity={0.2} />
 
       {/* Centered CTA stack — copy + Get started, vertically and horizontally centered */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
         <div className="hero-copy max-w-[300px]" style={{ textAlign: "center" }}>
           Let yourself be seen{" "}
           <em
@@ -43,9 +43,9 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Wordmark — pinned to bottom-right corner */}
-      <div className="absolute" style={{ right: 22, bottom: 22 }}>
-        <div className="wordmark" style={{ fontSize: 48 }}>
+      {/* Wordmark — bottom-right, lifted up slightly */}
+      <div className="absolute" style={{ right: 25, bottom: 60 }}>
+        <div className="wordmark" style={{ fontSize: 58 }}>
           vouch<sup>®</sup>
         </div>
       </div>

@@ -66,8 +66,6 @@ export default function PhoneFrame({ children }: { children: React.ReactNode }) 
           </div>
 
           <div className="phone-screen">{children}</div>
-
-          <div className="phone-home" aria-hidden />
         </div>
       </div>
     </>
