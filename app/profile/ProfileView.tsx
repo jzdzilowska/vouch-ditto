@@ -138,6 +138,7 @@ function ProfileBackdrop() {
       }}
     >
       <div className="hero-base" />
+      <div className="profile-backdrop-glow" />
       <div className="molecule">
         <div className="orb orb-amber-t2" />
         <div className="orb orb-amber-t1" />
@@ -151,7 +152,8 @@ function ProfileBackdrop() {
       </div>
       {/* Heavier wash so type stays legible */}
       <div className="orb-wash" style={{ background: "rgba(8, 4, 12, 0.55)" }} />
-      <div className="hero-grain" />
+      <div className="profile-backdrop-topgrad" />
+      <div className="hero-grain profile-backdrop-grain" />
     </div>
   );
 }
@@ -460,7 +462,7 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
       label="a perfect first date"
     >
       {/* avatar selector */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 10, marginTop: "14px"}}>
         {vouches.map((vv, i) => {
           const active = i === idx;
           return (
@@ -521,7 +523,7 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
         {v.q2}
       </div>
 
-      <div style={{ marginTop: 12, paddingLeft: 14 }}>
+      <div style={{ marginTop: 6, paddingLeft: 14 }}>
         <span
           style={{
             fontFamily: SANS,
@@ -688,19 +690,7 @@ function SectionShell({
           flexWrap: "wrap",
         }}
       >
-        {caption && (
-          <span
-            style={{
-              fontFamily: ITALIC,
-              fontStyle: "italic",
-              fontSize: 14,
-              color: "rgba(255,255,255,0.55)",
-              letterSpacing: "-0.005em",
-            }}
-          >
-            — {caption}
-          </span>
-        )}
+        {label ? <Eyebrow>{label}</Eyebrow> : null}
       </div>
       {children}
     </section>
@@ -766,7 +756,7 @@ function Wordmark() {
     >
       <div
         className="wordmark"
-        style={{ fontSize: 22, color: "rgba(255,255,255,0.45)" }}
+        style={{ fontSize: 22, color: "rgba(255, 255, 255, 0.87)" }}
       >
         vouch<sup>®</sup>
       </div>

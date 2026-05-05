@@ -877,6 +877,51 @@ body {
   0%, 100% { opacity: 0.58; transform: translateY(0); }
   50%      { opacity: 0.95; transform: translateY(-1px); }
 }
+@keyframes profileGlowDrift {
+  0%   { transform: translate(-6%, -10%) scale(1); }
+  25%  { transform: translate(8%, -2%) scale(1.08); }
+  50%  { transform: translate(4%, 8%) scale(1.02); }
+  75%  { transform: translate(-9%, 3%) scale(1.1); }
+  100% { transform: translate(-6%, -10%) scale(1); }
+}
+@keyframes profileGrainFlicker {
+  0%   { opacity: 0.11; }
+  18%  { opacity: 0.16; }
+  36%  { opacity: 0.08; }
+  54%  { opacity: 0.14; }
+  72%  { opacity: 0.1; }
+  100% { opacity: 0.13; }
+}
+
+.profile-backdrop-glow {
+  position: absolute;
+  inset: -14%;
+  pointer-events: none;
+  background:
+    radial-gradient(44% 36% at 26% 24%, rgba(255, 84, 156, 0.36) 0%, transparent 68%),
+    radial-gradient(42% 38% at 76% 36%, rgba(255, 175, 62, 0.34) 0%, transparent 70%),
+    radial-gradient(48% 44% at 54% 76%, rgba(221, 28, 62, 0.28) 0%, transparent 72%);
+  filter: blur(32px) saturate(118%);
+  mix-blend-mode: screen;
+  animation: profileGlowDrift 24s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+.profile-backdrop-topgrad {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 6, 14, 0.58) 0%,
+    rgba(10, 6, 14, 0.24) 24%,
+    rgba(10, 6, 14, 0.06) 44%,
+    transparent 62%
+  );
+}
+.profile-backdrop-grain {
+  animation: profileGrainFlicker 0.26s steps(2, end) infinite;
+}
 
 /* ─────────────────────────────────────────────────────────────
    iMessage skin — light-mode mirror of iOS Messages, used on the
