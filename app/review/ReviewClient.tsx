@@ -76,67 +76,59 @@ export default function ReviewClient({
   const hasBio = !!bio.trim();
 
   return (
-    <section className="space-y-4">
-      {/* Preview card — shows what others will see */}
-      <div className="rounded-3xl overflow-hidden bg-card border border-white/5 relative aspect-[3/4] max-h-[440px]">
-        {photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoUrl} alt={displayName} className="absolute inset-0 w-full h-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-muted">no photo</div>
-        )}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-5 pt-16">
-          <div className="text-2xl font-display tracking-tight">{displayName}</div>
-          <p className="text-sm leading-relaxed text-ink/90 line-clamp-4 mt-1">
-            {bio || <span className="text-muted">Your bio will appear here.</span>}
-          </p>
-        </div>
-        <div className="absolute top-3 left-3 text-[10px] uppercase tracking-widest bg-black/60 backdrop-blur rounded-full px-2 py-1 text-ink/80">
-          preview
-        </div>
+    <section className="review-editor">
+      <div className="review-editor-head">
+        <label className="review-editor-label">Bio draft</label>
+        <span className="review-editor-count">
+          {wordCount} words {wordCount > 130 ? "(over 130)" : ""}
+        </span>
       </div>
+      <textarea
+        className="review-editor-input"
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        placeholder={
+          canSynthesize
+            ? "Tap 'Generate from vouches' to draft this from your friends' answers."
+            : "Once friends submit, you'll see a draft here."
+        }
+      />
+      {error && <div className="review-editor-error">{error}</div>}
+      {info && <div className="review-editor-info">{info}</div>}
 
-      {/* Editor */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="label !mb-0">Bio</label>
-          <span className={`text-xs ${wordCount > 130 ? "text-accent" : "text-muted"}`}>
-            {wordCount} words {wordCount > 130 ? "(over 130)" : ""}
-          </span>
-        </div>
-        <textarea
-          className="input min-h-[180px] leading-relaxed"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          placeholder={canSynthesize ? "Tap 'Generate from vouches' to draft this from your friends' answers." : "Once friends submit, you'll see a draft here."}
-        />
-        {error && <div className="text-sm text-accent mt-2">{error}</div>}
-        {info && <div className="text-sm text-emerald-400 mt-2">{info}</div>}
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
+      <div className="review-actions-row">
         <button
           onClick={regenerate}
           disabled={!canSynthesize || busyKind !== null}
-          className="btn-secondary"
+          className="review-action review-action--secondary"
         >
-          {busyKind === "regen" ? "Generating…" : initialDraftBio ? "↻ Regenerate" : "Generate from vouches"}
+          {busyKind === "regen" ? "Generating..." : initialDraftBio ? "Regenerate" : "Generate from vouches"}
         </button>
         <button
           onClick={() => save(false)}
           disabled={!hasBio || busyKind !== null}
-          className="btn-secondary"
+          className="review-action review-action--secondary"
         >
-          {busyKind === "save" ? "Saving…" : "Save edits"}
+          {busyKind === "save" ? "Saving..." : "Save edits"}
         </button>
       </div>
       <button
         onClick={() => save(true)}
         disabled={!hasBio || busyKind !== null}
-        className="btn-primary w-full"
+        className="review-action review-action--primary"
       >
-        {busyKind === "publish" ? "Publishing…" : currentStatus === "live" ? "Update & keep live" : "Approve & go live →"}
+        {busyKind === "publish" ? "Publishing..." : currentStatus === "live" ? "Update & keep live" : "Approve & go live"}
       </button>
+      {!photoUrl && (
+        <div className="review-editor-note">
+          Add a main photo to make this review card fully visual.
+        </div>
+      )}
+      {!displayName && (
+        <div className="review-editor-note">
+          Add your display name in onboarding for the cleanest final result.
+        </div>
+      )}
     </section>
   );
 }
