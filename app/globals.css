@@ -25,16 +25,16 @@ body {
 }
 .hero-base {
   position: absolute; inset: 0;
-  background: #f8009d;
+  background: #ff1cac;
 }
 
 /* ─── Flare: bright concentrated core ─── */
 .flare-core {
   position: absolute;
-  width: 480px; height: 480px;
+  width: 800px; height: 800px;
   border-radius: 45% 55% 50% 50% / 55% 45% 55% 45%;
-  filter: blur(90px);
-  opacity: 0.9;
+  filter: blur(60px);
+  opacity: 1;
   will-change: transform;
 }
 .flare-core-warm {
@@ -43,24 +43,26 @@ body {
   animation: flareCore 15s ease-in-out infinite;
 }
 .flare-core-dusk {
-  background: radial-gradient(ellipse 90% 90% at 50% 50%, #ffe8f0 0%, #d070a0 30%, #8e4a6a 60%, transparent 85%);
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, #ffe8f0 0%, #d070a0 30%, #8e4a6a 60%, transparent 85%);
   top: 5%; left: 5%;
   animation: flareCore 11s ease-in-out infinite reverse;
 }
 .flare-core-honey {
-  background: radial-gradient(ellipse 90% 90% at 50% 50%, #fffbe8 0%, #f5c870 30%, #d8923a 60%, transparent 85%);
+  background: radial-gradient(ellipse 80% 90% at 50% 50%, #fffbe8 0%, #f5c870 30%, #d8923a 60%, transparent 85%);
   top: 5%; left: 5%;
   animation: flareCore 19s ease-in-out infinite;
 }
 .flare-core-rose {
-  background: radial-gradient(ellipse 70% 80% at 50% 50%, #ffee50 0%, #ffc000 20%, #ff8800 45%, #cc3300 65%, transparent 85%);
-  top: 15%; left: 15%;
+  background: radial-gradient(ellipse 70% 80% at 50% 50%, #ffff40 0%, #ffee00 12%, #ffc000 30%, #ff8800 50%, #ff4800 70%, transparent 88%);
+  top: 50%; left: 50%;
+  margin-top: -400px; margin-left: -400px;
   animation: flareCoreRose 32s ease-in-out infinite;
 }
 
 .flare-core-rose-pink {
   background: radial-gradient(ellipse 75% 85% at 50% 50%, #ff50a0 0%, #ff1878 25%, #cc0058 50%, #5a0028 70%, transparent 85%);
-  top: 15%; left: 10%;
+  top: 25%; left: 50%;
+  margin-top: -400px; margin-left: -400px;
   animation: flarePink 38s ease-in-out infinite;
 }
 
@@ -107,7 +109,7 @@ body {
   width: 200%; height: 200%;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.65;
+  opacity: 0.35;
   will-change: transform;
 }
 .flare-wash-warm {
@@ -126,7 +128,7 @@ body {
   animation: flareWash 42s ease-in-out infinite;
 }
 .flare-wash-rose {
-  background: radial-gradient(ellipse at 45% 50%, #ffb70e 0%, #ff7700 35%, #1a0505 65%, #1a0505 90%);
+  background: radial-gradient(ellipse at 50% 30%, #ff8800 0%, #dd2200 30%, #bb0020 55%, #880015 80%, #5a0010 100%);
   top: -50%; left: -50%;
   animation: flareWash 43s ease-in-out infinite;
 }
@@ -160,14 +162,24 @@ body {
   100% { transform: translate(0, 0) scaleX(1); }
 }
 
+/* Yellow core — gentle drift around center */
+@keyframes flareCoreRose {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(40px, 80px); }
+  40%  { transform: translate(-30px, 160px); }
+  60%  { transform: translate(50px, 100px); }
+  80%  { transform: translate(-20px, 30px); }
+  100% { transform: translate(0, 0); }
+}
+
 /* Pink orb — independent path, opposite drift */
 @keyframes flarePink {
-  0%   { transform: translate(120px, -60px); }
-  20%  { transform: translate(-40px, 180px); }
-  40%  { transform: translate(-100px, 350px); }
-  60%  { transform: translate(60px, 280px); }
-  80%  { transform: translate(150px, 80px); }
-  100% { transform: translate(120px, -60px); }
+  0%   { transform: translate(80px, -40px); }
+  20%  { transform: translate(-30px, 120px); }
+  40%  { transform: translate(-60px, 250px); }
+  60%  { transform: translate(40px, 180px); }
+  80%  { transform: translate(100px, 50px); }
+  100% { transform: translate(80px, -40px); }
 }
 
 /* Wash drifts gently underneath */
@@ -181,9 +193,7 @@ body {
 
 /* gradient masks at top/bottom of hero so chrome reads */
 .bottom-fade {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 180px;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.85) 100%);
-  pointer-events: none;
+  display: none;
 }
 .top-fade {
   position: absolute; left: 0; right: 0; top: 0; height: 90px;
