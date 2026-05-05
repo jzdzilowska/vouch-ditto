@@ -74,7 +74,10 @@ export default async function DashboardPage() {
       </form>
 
       <div className="dash-shell">
-        <h1 className="welcome-heading" style={{ maxWidth: 280}}>
+        <h1
+          className="welcome-heading"
+          style={remaining === 0 ? { maxWidth: 280, marginBottom: -10 } : { maxWidth: 280 }}
+        >
           {remaining === 0 ? (
             <>
               All three are <em>in.</em>
@@ -98,7 +101,7 @@ export default async function DashboardPage() {
           </div>
           <div className="dash-progress-caption">
             {submissionCount} of 3{" "}
-            {submissionCount === 0 ? "to begin" : submissionCount >= 3 ? "in." : "so far"}
+            {submissionCount === 0 ? "to begin" : submissionCount >= 3 ? "in" : "so far"}
           </div>
         </div>
 
@@ -112,10 +115,32 @@ export default async function DashboardPage() {
           <Link
             href={live ? "/discover" : "/review"}
             className="cta-pill"
-            aria-label={live ? "Open discover" : latestDraft ? "Review your draft" : "Generate your bio"}
+            aria-label={live ? "Open discover" : latestDraft ? "Review your draft" : "You have some great friends. Your bio's ready."}
+            style={
+              !live && !latestDraft
+                ? { minWidth: 290, marginTop: 14, marginBottom: -10 }
+                : undefined
+            }
           >
             <span className="cta-pill__label">
-              {live ? "Open discover" : latestDraft ? "Review your draft" : "Generate your bio"}
+              {live ? (
+                "Open discover"
+              ) : latestDraft ? (
+                "Review your draft"
+              ) : (
+                <span
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    lineHeight: 1.15,
+                    gap: 2,
+                  }}
+                >
+                  <span>Your bio&apos;s ready.</span>
+                  <em>You have some great friends.</em>
+                </span>
+              )}
             </span>
             <span className="cta-pill__heart" aria-hidden>
               <HeartIcon />
