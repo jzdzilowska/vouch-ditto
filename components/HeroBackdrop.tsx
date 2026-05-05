@@ -10,15 +10,16 @@ export default function HeroBackdrop({
   return (
     <div className="hero-photo">
       <div className="hero-base" />
-      {/* Light leak: bright core + stretched trailing layers */}
-      <div className={`flare-core flare-core-${variant}`} />
-      <div className={`flare-trail flare-trail-${variant}`} />
-      {variant === "rose" && <div className="flare-core flare-core-rose-pink" />}
-      {variant === "rose" && <div className="flare-trail flare-trail-rose-accent" />}
-      <div className={`flare-wash flare-wash-${variant}`} />
+      {/* Orb A trail (behind) → head (front) */}
+      <div className="orb orb-amber-t2" />
+      <div className="orb orb-amber-t1" />
+      <div className="orb orb-amber" />
+      {/* Orb B trail (behind) → head (front) */}
+      <div className="orb orb-indigo-t2" />
+      <div className="orb orb-indigo-t1" />
+      <div className="orb orb-indigo" />
+      {/* Grain on top */}
       <div className="hero-grain" />
-      <div className="top-fade" />
-      <div className="bottom-fade" />
       {showAnnotation && (
         <div
           style={{
