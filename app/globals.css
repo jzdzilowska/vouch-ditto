@@ -861,6 +861,19 @@ body {
   30%           { opacity: 1;    transform: translateY(-2px); }
 }
 
+/* ─── Profile-page micro-animations
+   - fadeUp: section/photo enter (used on swap-in)
+   - bounceDown: scroll-hint chevron at the bottom of the photo hero
+   ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
+
 /* ─────────────────────────────────────────────────────────────
    iMessage skin — light-mode mirror of iOS Messages, used on the
    /friend/<slug> chat. Pixel values lifted from current iOS:

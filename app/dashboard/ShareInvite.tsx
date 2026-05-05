@@ -38,7 +38,7 @@ export default function ShareInvite({
   }
 
   const smsBody = encodeURIComponent(
-    `Would you wouch for me? ${url}`
+    `Would you vouch for me? ${url}`
   );
   const smsHref = `sms:&body=${smsBody}`;
 

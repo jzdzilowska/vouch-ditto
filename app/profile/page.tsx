@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import ProfileCard, { type ProfileCardData, type VouchExcerpt } from "@/components/ProfileCard";
+import ProfileView, { type ProfileViewVouch, type ProfileViewProfile } from "./ProfileView";
 
 export const dynamic = "force-dynamic";
 
-// Personal profile preview — renders your card exactly in the public card style
-// (same component used in discover), but in a single-card screen with a back
-// affordance to dashboard.
+// Personal profile preview — single-screen view of "what your card looks
+// like" to other people. Layout matches the redesign in
+// profile-redesign.html (Variant A — Pages):
+//   1. Full-bleed photo hero (fills the first screen, masthead-style)
+//   2. Below it, an orb-molecule animated backdrop (the moving gradient
+//      from onboarding) under the vouch-built sections — three-words
+//      constellation, perfect-date carousel, secret-strength stack,
+//      chosen-by credits, photo strip.
 export default async function ProfilePage() {
   const supabase = createClient();
   const {
@@ -24,56 +28,36 @@ export default async function ProfilePage() {
 
   const { data: subs } = await supabase
     .from("friend_submissions")
-    .select("friend_name, friend_relationship, q2_perfect_date, q3_secret_strength, created_at")
+    .select(
+      "friend_name, friend_relationship, q1_three_words, q2_perfect_date, q3_secret_strength, created_at"
+    )
     .eq("profile_id", profile.id)
     .order("created_at", { ascending: true })
     .limit(3);
 
-  const vouches: VouchExcerpt[] = (subs ?? []).map((s) => ({
-    text:
-      (s.q3_secret_strength?.length ?? 0) >= 24
-        ? `"${s.q3_secret_strength}"`
-        : `"${s.q2_perfect_date}"`,
-    author: firstName(s.friend_name),
+  // Map raw friend_submissions rows into the ProfileView's richer shape
+  // (one object per friend, with q1/q2/q3 carried through so each
+  // section can pick the answer it needs).
+  const vouches: ProfileViewVouch[] = (subs ?? []).map((s) => ({
+    name: firstName(s.friend_name),
     relation: s.friend_relationship || null,
+    q1: s.q1_three_words || "",
+    q2: s.q2_perfect_date || "",
+    q3: s.q3_secret_strength || "",
   }));
 
-  const card: ProfileCardData = {
+  const view: ProfileViewProfile = {
     id: profile.id,
     display_name: profile.display_name,
     age: profile.age,
     city: profile.city,
     bio: profile.bio,
     photo_urls: profile.photo_urls ?? [],
-    vouches,
-    vouchedBy: vouches.map((v) => v.author),
   };
 
-  return (
-    <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] bg-black overflow-hidden">
-      <div
-        className="absolute z-40 flex items-center justify-between px-3.5"
-        style={{ top: 56, left: 0, right: 0, marginTop: 10 }}
-      >
-        <Link
-          href="/dashboard"
-          aria-label="Back"
-          className="w-9 h-9 rounded-full backdrop-blur-md text-white text-lg flex items-center justify-center"
-          style={{
-            background: "rgba(0,0,0,0.4)",
-            border: "1px solid rgba(255,255,255,0.15)",
-          }}
-        >
-          ‹
-        </Link>
-      </div>
-
-      <ProfileCard profile={card} />
-    </main>
-  );
+  return <ProfileView profile={view} vouches={vouches} />;
 }
 
 function firstName(s: string) {
   return s.trim().split(/\s+/)[0];
 }
-
