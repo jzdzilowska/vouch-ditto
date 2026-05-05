@@ -25,7 +25,7 @@ body {
 }
 .hero-base {
   position: absolute; inset: 0;
-  background: #0a0504;
+  background: #ff7300;
 }
 
 /* ─── Flare: bright concentrated core ─── */
@@ -52,6 +52,11 @@ body {
   top: 5%; left: 5%;
   animation: flareCore 19s ease-in-out infinite;
 }
+.flare-core-rose {
+  background: radial-gradient(ellipse 90% 80% at 50% 50%, #fff0f3 0%, #ffc062 25%, #ff7c58 50%, #e32168 70%, transparent 85%);
+  top: 5%; left: 5%;
+  animation: flareCore 32s ease-in-out infinite;
+}
 
 /* ─── Flare: stretched smear trailing the core ─── */
 .flare-trail {
@@ -77,14 +82,19 @@ body {
   top: 0%; left: -5%;
   animation: flareTrail 32s ease-in-out infinite;
 }
+.flare-trail-rose {
+  background: radial-gradient(ellipse 90% 60% at 35% 50%, #ffbd2f 0%, #ff649d 35%, transparent 70%);
+  top: 0%; left: -5%;
+  animation: flareTrail 32s ease-in-out infinite;
+}
 
 /* ─── Flare: wide soft wash of color ─── */
 .flare-wash {
   position: absolute;
-  width: 130%; height: 90%;
+  width: 200%; height: 200%;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.25;
+  opacity: 0.5;
   will-change: transform;
 }
 .flare-wash-warm {
@@ -101,6 +111,11 @@ body {
   background: radial-gradient(ellipse at 45% 50%, #e0a040 0%, #6b3f1a 45%, transparent 75%);
   top: -10%; left: -15%;
   animation: flareWash 42s ease-in-out infinite;
+}
+.flare-wash-rose {
+  background: radial-gradient(ellipse at 45% 50%, #ffcd7c 0%, #7a3a50 35%, #3d1a28 65%, #25ffff 90%);
+  top: -50%; left: -50%;
+  animation: flareWash 43s ease-in-out infinite;
 }
 
 /* film grain over hero (SVG noise pattern) */

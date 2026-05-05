@@ -3,7 +3,7 @@ export default function HeroBackdrop({
   showAnnotation = false,
   annotation,
 }: {
-  variant?: "warm" | "dusk" | "honey";
+  variant?: "warm" | "dusk" | "honey" | "rose";
   showAnnotation?: boolean;
   annotation?: string;
 }) {

@@ -11,7 +11,7 @@ import Chip, { PREMISE_CHIPS } from "@/components/Chip";
 export default function HomePage() {
   return (
     <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] overflow-hidden bg-black">
-      <HeroBackdrop variant="warm" />
+      <HeroBackdrop variant="rose" />
       <GrainOverlay opacity={0.2} />
 
       {/* Top chip row + intimacy copy */}
