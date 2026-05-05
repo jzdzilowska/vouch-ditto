@@ -57,7 +57,7 @@ export default function FriendChat({
         () => cancel
       );
       await sendBot(`it’s 4 quick questions, takes a min.`, () => cancel);
-      await sendBot(`first - what should I call you?`, () => cancel);
+      await sendBot(`first - what's your name?`, () => cancel);
       if (!cancel) setStep("ask_name");
     })();
     return () => {
@@ -103,7 +103,7 @@ export default function FriendChat({
         setRelationship(value);
         setStep("intro");
         await sendBot(`got it. ok here we go.`);
-        await sendBot(`1/3 — describe ${displayName} in 3 words.`);
+        await sendBot(`1/3 - what's ${displayName} like in 3 words?`);
         setStep("ask_q1");
         break;
       }
@@ -111,7 +111,7 @@ export default function FriendChat({
         setQ1(value);
         setStep("intro");
         await sendBot(`love that.`);
-        await sendBot(`2/3 — what’s their idea of a perfect first date?`);
+        await sendBot(`2/3 - what’s ${displayName}'s ideal Sunday, start to finish?`);
         setStep("ask_q2");
         break;
       }
@@ -120,7 +120,7 @@ export default function FriendChat({
         setStep("intro");
         await sendBot(`mmmm okay.`);
         await sendBot(
-          `last one — 3/3: what’s something a date wouldn’t notice on the first night, but really should know about ${displayName}?`
+          `last one - 3/3: what’s something about them that doesn’t fit their first impression?`
         );
         setStep("ask_q3");
         break;

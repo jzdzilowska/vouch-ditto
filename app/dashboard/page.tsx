@@ -98,7 +98,7 @@ export default async function DashboardPage() {
           </div>
           <div className="dash-progress-caption">
             {submissionCount} of 3{" "}
-            {submissionCount === 0 ? "to begin" : submissionCount >= 3 ? "in." : "so far."}
+            {submissionCount === 0 ? "to begin" : submissionCount >= 3 ? "in." : "so far"}
           </div>
         </div>
 
