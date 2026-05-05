@@ -378,7 +378,7 @@ body {
   width: 100%;
   max-width: 320px;
   margin: 0 auto;
-  padding: 80px 24px 110px;
+  padding: 180px 24px 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -519,12 +519,13 @@ body {
   width: 100%;
 }
 .dash-link {
+  margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 14px 9px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px 6px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.375);
   border-radius: 999px;
   width: 100%;
   max-width: 280px;
@@ -561,6 +562,11 @@ body {
   font-style: italic;
   font-size: 13px;
   color: #fff;
+}
+/* Pull the "or share another way" link tight to the iMessage CTA */
+.dash-share .cta-secondary {
+  margin-top: -10px;
+  padding: 4px 0;
 }
 
 /* ─── Hero copy ─── */

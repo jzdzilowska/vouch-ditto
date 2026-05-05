@@ -68,13 +68,13 @@ export default async function DashboardPage() {
         action="/auth/signout"
         method="post"
         className="absolute z-10"
-        style={{ top: 24, right: 22 }}
+        style={{ top: 44, right: 22 }}
       >
         <button className="dash-signout">sign out</button>
       </form>
 
       <div className="dash-shell">
-        <h1 className="welcome-heading" style={{ maxWidth: 280 }}>
+        <h1 className="welcome-heading" style={{ maxWidth: 280}}>
           {remaining === 0 ? (
             <>
               All three are <em>in.</em>
@@ -85,8 +85,7 @@ export default async function DashboardPage() {
             </>
           ) : (
             <>
-              Now ask {remaining === 3 ? "three" : `${remaining} more`}{" "}
-              <em>who actually get who you are.</em>
+              Now honor <em>the chosen three</em> who know you best.
             </>
           )}
         </h1>
@@ -99,7 +98,7 @@ export default async function DashboardPage() {
           </div>
           <div className="dash-progress-caption">
             {submissionCount} of 3{" "}
-            <em>{submissionCount === 0 ? "to begin." : submissionCount >= 3 ? "in." : "so far."}</em>
+            {submissionCount === 0 ? "to begin" : submissionCount >= 3 ? "in." : "so far."}
           </div>
         </div>
 

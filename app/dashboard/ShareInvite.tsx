@@ -38,7 +38,7 @@ export default function ShareInvite({
   }
 
   const smsBody = encodeURIComponent(
-    `i'm building my dating profile on vouch and want you to write part of it (3 quick questions, takes 60s). ${url}`
+    `Would you wouch for me? ${url}`
   );
   const smsHref = `sms:&body=${smsBody}`;
 
@@ -79,7 +79,7 @@ export default function ShareInvite({
 
       {hasNativeShare && (
         <button onClick={nativeShare} className="cta-secondary" type="button">
-          or share <em>another way.</em>
+          or share another way
         </button>
       )}
     </div>
