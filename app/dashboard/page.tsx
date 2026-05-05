@@ -73,7 +73,7 @@ export default async function DashboardPage() {
         <button className="dash-signout">sign out</button>
       </form>
 
-      <div className="dash-shell">
+      <div className={"dash-shell" + (remaining === 0 ? " dash-shell--complete" : "")}>
         <h1
           className="welcome-heading"
           style={remaining === 0 ? { maxWidth: 280, marginBottom: -10 } : { maxWidth: 280 }}
@@ -138,7 +138,7 @@ export default async function DashboardPage() {
                   }}
                 >
                   <span>Your bio&apos;s ready.</span>
-                  <em>You have some great friends.</em>
+                  You have some great friends.
                 </span>
               )}
             </span>
@@ -148,7 +148,9 @@ export default async function DashboardPage() {
           </Link>
         )}
 
-        <ShareInvite slug={profile.invite_slug} displayName={profile.display_name} />
+        {remaining > 0 && (
+          <ShareInvite slug={profile.invite_slug} displayName={profile.display_name} />
+        )}
       </div>
 
       <div className="absolute" style={{ right: 22, bottom: 28 }}>

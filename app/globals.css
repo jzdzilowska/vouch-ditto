@@ -383,7 +383,15 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 28px;
+  gap: 18px;
+}
+.dash-shell--complete {
+  min-height: 100%;
+  justify-content: center;
+  /* Compensate for fixed signout (top) + wordmark (bottom) overlays so
+     the visible content block sits optically centered in the phone. */
+  padding-top: 94px;
+  padding-bottom: 134px;
 }
 
 .dash-signout {
