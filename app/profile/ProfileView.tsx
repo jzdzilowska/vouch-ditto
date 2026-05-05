@@ -82,7 +82,7 @@ export default function ProfileView({
       </div>
 
       {/* Photo hero — first visible screen */}
-      <ProfilePhotoHero profile={profile} vouchCount={vouches.length} />
+      <ProfilePhotoHero profile={profile} vouchCount={vouches.length} vouches={vouches} />
 
       {/* Below-the-fold canvas — orb shows through. Soft seam from the
           black photo bottom into the orb canvas. */}
@@ -102,8 +102,7 @@ export default function ProfileView({
           }}
         />
 
-        <div className="relative" style={{ zIndex: 2, paddingTop: 36 }}>
-          {vouches.length > 0 && <HeroQuote vouch={vouches[0]} />}
+        <div className="relative" style={{ zIndex: 2, paddingTop: 10 }}>
 
           {vouches.length > 0 && (
             <>
@@ -170,14 +169,17 @@ function ProfileBackdrop() {
 function ProfilePhotoHero({
   profile,
   vouchCount,
+  vouches,
 }: {
   profile: ProfileViewProfile;
   vouchCount: number;
+  vouches: ProfileViewVouch[];
 }) {
   const [photoIdx, setPhotoIdx] = useState(0);
   const photos = profile.photo_urls;
   const totalPhotos = Math.max(1, photos.length);
   const photo = photos[photoIdx] ?? null;
+  const spotlightVouch = vouches.length > 0 ? vouches[0] : null;
 
   function next() {
     setPhotoIdx((i) => (i + 1) % totalPhotos);
@@ -270,76 +272,6 @@ function ProfilePhotoHero({
         </>
       )}
 
-      {/* Photo segments — dashboard's 28×3 pills, stretched */}
-      <div
-        className="absolute flex pointer-events-none"
-      >
-        {Array.from({ length: totalPhotos }).map((_, i) => (
-          <span
-            key={i}
-            className="dash-progress-pill"
-            data-done={i <= photoIdx}
-            style={{ flex: 1, height: 2.5, width: "auto", borderRadius: 2 }}
-          />
-        ))}
-      </div>
-
-      {/* Vouch seal — circular postmark in upper-right */}
-      <div
-        className="absolute"
-        style={{
-          top: 110,
-          right: 22,
-          zIndex: 5,
-          width: 84,
-          height: 84,
-          borderRadius: "50%",
-          border: "1px solid rgba(255,255,255,0.45)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backdropFilter: "blur(8px)",
-          background: "rgba(0,0,0,0.18)",
-          textAlign: "center",
-          transform: "rotate(-6deg)",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: DISPLAY,
-            fontWeight: 300,
-            fontSize: 34,
-            lineHeight: 0.9,
-            color: "#fff",
-          }}
-        >
-          {vouchCount}
-        </span>
-        <span
-          style={{
-            fontFamily: MONO,
-            fontSize: 8,
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.78)",
-            marginTop: 4,
-          }}
-        >
-          {vouchCount === 1 ? "vouch" : "vouches"}
-        </span>
-        <span
-          style={{
-            fontFamily: ITALIC,
-            fontStyle: "italic",
-            fontSize: 10,
-            color: "rgba(255,255,255,0.55)",
-            marginTop: 2,
-          }}
-        >
-          verified.
-        </span>
-      </div>
 
       {/* Bottom stack — masthead */}
       <div
@@ -361,19 +293,6 @@ function ProfilePhotoHero({
           }}
         >
           {profile.display_name}
-          {profile.age != null && (
-            <span
-              style={{
-                fontFamily: ITALIC,
-                fontStyle: "italic",
-                fontWeight: 300,
-                fontSize: 48,
-                opacity: 0.8,
-                marginLeft: 10,
-              }}
-            >/ {profile.age}
-            </span>
-          )}
         </h1>
 
         {/* metadata — only "based in" since occupation isn't in the
@@ -382,84 +301,42 @@ function ProfilePhotoHero({
           <div>
             <div
               style={{
-                fontFamily: ITALIC,
-                fontStyle: "italic",
-                fontSize: 20,
+                fontFamily: SANS,
+                fontSize: 12,
                 lineHeight: 1.5,
                 color: "#fff",
                 letterSpacing: "-0.01em",
+                opacity: 0.8,
                 marginLeft: 14,
+                marginBottom: 20,
               }}
             >
-              {profile.city}.
+              {profile.age}, {profile.city}
             </div>
           </div>
         )}
-      </div>
 
-      {/* Scroll hint — pinned just above the fold */}
-      <div
-        className="absolute flex items-center justify-between"
-        style={{
-          left: 22,
-          right: 22,
-          bottom: 28,
-          zIndex: 5,
-          fontFamily: SANS,
-          fontSize: 11,
-          color: "rgba(255,255,255,0.55)",
-          letterSpacing: "-0.005em",
-        }}
-      >
-        <span>
-          keep scrolling{" "}
-          <em
-            style={{
-              fontFamily: ITALIC,
-              fontStyle: "italic",
-              fontSize: 13,
-              color: "#fff",
-            }}
-          >
-            for what they said.
-          </em>
-        </span>
-        <span
-          aria-hidden
-          style={{
-            fontSize: 14,
-            opacity: 0.6,
-            animation: "bounceDown 1.8s ease-in-out infinite",
-          }}
-        >
-          ↓
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────────────
-// Hero quote — first vouch's q3, centered, 26px italic
-// ──────────────────────────────────────────────────────────────────────
-function HeroQuote({ vouch }: { vouch: ProfileViewVouch }) {
-  return (
-    <div style={{ padding: "0 28px 8px", textAlign: "center" }}>
-      <p
-        style={{
-          fontFamily: ITALIC,
-          fontStyle: "italic",
-          fontSize: 26,
-          lineHeight: 1.2,
-          letterSpacing: "-0.01em",
-          color: "#fff",
-          margin: 0,
-        }}
-      >
-        &ldquo;{vouch.q3}&rdquo;
-      </p>
-      <div style={{ marginTop: 14 }}>
-        <VouchedBy name={vouch.name} />
+        {spotlightVouch && (
+          <div style={{ marginTop: 10 }}>
+            <div
+              style={{
+                fontFamily: ITALIC,
+                fontStyle: "italic",
+                fontSize: 19,
+                lineHeight: 1.25,
+                letterSpacing: "-0.01em",
+                color: "rgba(255,255,255,0.98)",
+                textShadow: "0 2px 18px rgba(0,0,0,0.55)",
+                maxWidth: "auto",
+              }}
+            >
+              {spotlightVouch.q3}
+            </div>
+            <div style={{ marginTop: 4 }}>
+              <VouchedBy name={spotlightVouch.name} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -847,17 +724,7 @@ function VouchedBy({ name }: { name: string }) {
         letterSpacing: "-0.005em",
       }}
     >
-      vouched by{" "}
-      <em
-        style={{
-          fontFamily: ITALIC,
-          fontStyle: "italic",
-          fontSize: 14,
-          color: "#fff",
-        }}
-      >
-        {name}.
-      </em>
+      / vouched by {name}.
     </span>
   );
 }
