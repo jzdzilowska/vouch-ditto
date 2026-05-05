@@ -873,6 +873,10 @@ body {
   0%, 100% { transform: translateY(0); opacity: 0.6; }
   50%      { transform: translateY(4px); opacity: 1; }
 }
+@keyframes profileVouchPulse {
+  0%, 100% { opacity: 0.58; transform: translateY(0); }
+  50%      { opacity: 0.95; transform: translateY(-1px); }
+}
 
 /* ─────────────────────────────────────────────────────────────
    iMessage skin — light-mode mirror of iOS Messages, used on the

@@ -106,15 +106,9 @@ export default function ProfileView({
 
           {vouches.length > 0 && (
             <>
-              <Hairline style={{ margin: "32px 24px 0" }} />
               <ThreeWordsSection vouches={vouches} />
-              <Hairline style={{ margin: "0 24px" }} />
               <PerfectDateSection vouches={vouches} />
-              <Hairline style={{ margin: "0 24px" }} />
-              <SecretStrengthSection vouches={vouches} />
-              <Hairline style={{ margin: "0 24px" }} />
               <ChosenBySection vouches={vouches} />
-              <Hairline style={{ margin: "0 24px" }} />
             </>
           )}
 
@@ -410,6 +404,7 @@ function ThreeWordsSection({ vouches }: { vouches: ProfileViewVouch[] }) {
           padding: "0px 0 0px",
           alignItems: "baseline",
           justifyContent: "flex-start",
+          marginTop: "40px",
         }}
       >
         {words.map((w, i) => {
@@ -432,7 +427,7 @@ function ThreeWordsSection({ vouches }: { vouches: ProfileViewVouch[] }) {
               {w.word.toLowerCase()}
               <sup
                 style={{
-                  fontFamily: MONO,
+                  fontFamily: SANS,
                   fontSize: 8,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
@@ -463,7 +458,6 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   return (
     <SectionShell
       label="a perfect first date"
-      caption="according to the people who'd know"
     >
       {/* avatar selector */}
       <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
@@ -521,8 +515,6 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
           lineHeight: 1.32,
           letterSpacing: "-0.01em",
           color: "rgba(255,255,255,0.94)",
-          paddingLeft: 14,
-          borderLeft: "1px solid rgba(255,255,255,0.18)",
           animation: "fadeUp 0.45s ease-out",
         }}
       >
@@ -538,7 +530,7 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
             letterSpacing: "-0.005em",
           }}
         >
-          — {v.name}
+          / {v.name}
           {v.relation ? `, ${v.relation}` : ""}
         </span>
       </div>
@@ -552,8 +544,7 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
 function SecretStrengthSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   return (
     <SectionShell
-      label="what a date wouldn't notice"
-      caption="but should"
+      label="what a date wouldn't notice but should"
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
         {vouches.map((v, i) => (
@@ -566,7 +557,7 @@ function SecretStrengthSection({ vouches }: { vouches: ProfileViewVouch[] }) {
                 position: "absolute",
                 left: 0,
                 top: 4,
-                fontFamily: MONO,
+                fontFamily: SANS,
                 fontSize: 9,
                 letterSpacing: "0.22em",
                 color: "rgba(255,255,255,0.4)",
@@ -586,7 +577,7 @@ function SecretStrengthSection({ vouches }: { vouches: ProfileViewVouch[] }) {
               {v.q3}
             </div>
             <div style={{ marginTop: 6 }}>
-              <VouchedBy name={v.name} />
+              <VouchedBy name={v.name} pulse />
             </div>
           </div>
         ))}
@@ -603,9 +594,8 @@ function ChosenBySection({ vouches }: { vouches: ProfileViewVouch[] }) {
   return (
     <SectionShell
       label="chosen by"
-      caption={`the ${vouches.length} who know you best`}
     >
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", marginTop: "-20px" }}>
         {vouches.map((v, i) => (
           <div
             key={v.name + i}
@@ -637,8 +627,7 @@ function PhotoStripSection({ profile }: { profile: ProfileViewProfile }) {
   if (profile.photo_urls.length === 0) return null;
   return (
     <SectionShell
-      label="and what you look like"
-      caption="the rest of the photos"
+      label=""
     >
       <div
         className="no-scrollbar"
@@ -688,7 +677,7 @@ function SectionShell({
 }) {
   return (
     <section
-      style={{ padding: "26px 24px 26px", position: "relative", ...style }}
+      style={{ padding: "18px 26px 18px", position: "relative", ...style }}
     >
       <div
         style={{
@@ -699,7 +688,6 @@ function SectionShell({
           flexWrap: "wrap",
         }}
       >
-        <Eyebrow>{label}</Eyebrow>
         {caption && (
           <span
             style={{
@@ -729,7 +717,7 @@ function Eyebrow({
   return (
     <div
       style={{
-        fontFamily: MONO,
+        fontFamily: SANS,
         fontSize: 9.5,
         letterSpacing: "0.28em",
         textTransform: "uppercase",
@@ -750,7 +738,7 @@ function Hairline({ style }: { style?: React.CSSProperties }) {
   );
 }
 
-function VouchedBy({ name }: { name: string }) {
+function VouchedBy({ name, pulse = false }: { name: string; pulse?: boolean }) {
   return (
     <span
       style={{
@@ -758,9 +746,11 @@ function VouchedBy({ name }: { name: string }) {
         fontSize: 12,
         color: "rgba(255,255,255,0.55)",
         letterSpacing: "-0.005em",
+        animation: pulse ? "profileVouchPulse 2.2s ease-in-out infinite" : undefined,
+        display: "inline-block",
       }}
     >
-      / vouched by {name}.
+      / {name}
     </span>
   );
 }
