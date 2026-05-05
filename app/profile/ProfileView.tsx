@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 // Profile redesign — "your profile is made out of other people's words"
@@ -176,16 +176,41 @@ function ProfilePhotoHero({
   vouches: ProfileViewVouch[];
 }) {
   const [photoIdx, setPhotoIdx] = useState(0);
+  const [visiblePhotoIdx, setVisiblePhotoIdx] = useState(0);
+  const [incomingPhotoIdx, setIncomingPhotoIdx] = useState<number | null>(null);
+  const swapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const photos = profile.photo_urls;
   const totalPhotos = Math.max(1, photos.length);
-  const photo = photos[photoIdx] ?? null;
-  const spotlightVouch = vouches.length > 0 ? vouches[0] : null;
+  const photo = photos[visiblePhotoIdx] ?? null;
+  const incomingPhoto =
+    incomingPhotoIdx != null ? photos[incomingPhotoIdx] ?? null : null;
+  const spotlightVouch =
+    vouches.length > 0 ? vouches[photoIdx % vouches.length] : null;
+  const CROSSFADE_MS = 360;
+
+  useEffect(() => {
+    return () => {
+      if (swapTimerRef.current) clearTimeout(swapTimerRef.current);
+    };
+  }, []);
+
+  function goTo(target: number) {
+    if (target === visiblePhotoIdx || totalPhotos <= 1) return;
+    setPhotoIdx(target);
+    setIncomingPhotoIdx(target);
+    if (swapTimerRef.current) clearTimeout(swapTimerRef.current);
+    swapTimerRef.current = setTimeout(() => {
+      setVisiblePhotoIdx(target);
+      setIncomingPhotoIdx(null);
+      swapTimerRef.current = null;
+    }, CROSSFADE_MS);
+  }
 
   function next() {
-    setPhotoIdx((i) => (i + 1) % totalPhotos);
+    goTo((photoIdx + 1) % totalPhotos);
   }
   function prev() {
-    setPhotoIdx((i) => (i - 1 + totalPhotos) % totalPhotos);
+    goTo((photoIdx - 1 + totalPhotos) % totalPhotos);
   }
 
   // Profile number — just a stable display device. Use last 3 chars of
@@ -195,22 +220,33 @@ function ProfilePhotoHero({
   return (
     <div
       className="relative w-full overflow-hidden select-none"
-      style={{ height: "100dvh", maxHeight: 874, zIndex: 2 }}
+      style={{ height: "100dvh", maxHeight: 874, zIndex: 2}}
     >
       {/* Photo — full-bleed, untouched. Cross-fade on swap via key. */}
       {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          key={photoIdx}
+          key={`base-${visiblePhotoIdx}`}
           src={photo}
           alt={profile.display_name}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           draggable={false}
-          style={{ animation: "fadeUp 0.4s ease-out" }}
+          style={{ opacity: 1 }}
         />
       ) : (
         <div className="absolute inset-0 bg-neutral-900" />
       )}
+      {incomingPhoto ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={`incoming-${incomingPhotoIdx}`}
+          src={incomingPhoto}
+          alt={profile.display_name}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          draggable={false}
+          style={{ animation: `fadeUp ${CROSSFADE_MS}ms ease-out both` }}
+        />
+      ) : null}
 
       {/* Top fade — segments + chrome legibility */}
       <div
@@ -276,7 +312,7 @@ function ProfilePhotoHero({
       {/* Bottom stack — masthead */}
       <div
         className="absolute"
-        style={{ left: 22, right: 22, bottom: 92, zIndex: 5 }}
+        style={{ left: 22, right: 22, bottom: 44, zIndex: 5 }}
       >
         {/* Name — masthead Fraunces 76px */}
         <h1
