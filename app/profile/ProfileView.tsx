@@ -405,8 +405,9 @@ function ThreeWordsSection({ vouches }: { vouches: ProfileViewVouch[] }) {
           gap: "14px 14px",
           padding: "0px 0 0px",
           alignItems: "baseline",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           marginTop: "40px",
+          textAlign: "center",
         }}
       >
         {words.map((w, i) => {
@@ -457,70 +458,72 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   const [idx, setIdx] = useState(0);
   const v = vouches[idx];
   if (!v) return null;
+  const hasMany = vouches.length > 1;
+  const prev = () => setIdx((i) => (i - 1 + vouches.length) % vouches.length);
+  const next = () => setIdx((i) => (i + 1) % vouches.length);
   return (
     <SectionShell
-      label="a perfect first date"
+      label="a perfect first date" 
+      style={{ alignItems: "center", justifyContent: "center", textAlign: "center"}}
     >
-      {/* avatar selector */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 10, marginTop: "14px"}}>
-        {vouches.map((vv, i) => {
-          const active = i === idx;
-          return (
-            <button
-              key={vv.name + i}
-              type="button"
-              onClick={() => setIdx(i)}
-              aria-label={`See ${vv.name}'s perfect date`}
-              style={{
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                opacity: active ? 1 : 0.45,
-                transition: "opacity 0.3s ease",
-              }}
-            >
-              <span
-                className="dash-friend__avatar"
-                style={{
-                  borderColor: active
-                    ? "rgba(255,255,255,0.6)"
-                    : "rgba(255,255,255,0.14)",
-                }}
-              >
-                {vv.name[0]}
-              </span>
-              <span
-                style={{
-                  fontFamily: SANS,
-                  fontSize: 12,
-                  color: active ? "#fff" : "rgba(255,255,255,0.5)",
-                  letterSpacing: "-0.005em",
-                }}
-              >
-                {vv.name.toLowerCase()}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div
-        key={v.name + idx}
-        style={{
-          fontFamily: ITALIC,
-          fontStyle: "italic",
-          fontSize: 22,
-          lineHeight: 1.32,
-          letterSpacing: "-0.01em",
-          color: "rgba(255,255,255,0.94)",
-          animation: "fadeUp 0.45s ease-out",
-        }}
-      >
-        {v.q2}
+      <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
+        <button
+          type="button"
+          onClick={prev}
+          aria-label="Previous perfect date quote"
+          disabled={!hasMany}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "rgba(255,255,255,0.8)",
+            fontFamily: SANS,
+            fontSize: 20,
+            lineHeight: 1,
+            cursor: hasMany ? "pointer" : "default",
+            opacity: hasMany ? 0.9 : 0.25,
+            padding: 0,
+            width: 16,
+            flexShrink: 0,
+          }}
+        >
+          ‹
+        </button>
+        <div
+          key={v.name + idx}
+          style={{
+            fontFamily: ITALIC,
+            fontStyle: "italic",
+            fontSize: 22,
+            lineHeight: 1.32,
+            letterSpacing: "-0.01em",
+            color: "rgba(255,255,255,0.94)",
+            animation: "fadeUp 0.45s ease-out",
+            flex: 1,
+          }}
+        >
+          {v.q2}
+        </div>
+        <button
+          type="button"
+          onClick={next}
+          aria-label="Next perfect date quote"
+          disabled={!hasMany}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "rgba(255,255,255,0.8)",
+            fontFamily: SANS,
+            fontSize: 20,
+            lineHeight: 1,
+            cursor: hasMany ? "pointer" : "default",
+            opacity: hasMany ? 0.9 : 0.25,
+            padding: 0,
+            width: 16,
+            flexShrink: 0,
+          }}
+        >
+          ›
+        </button>
       </div>
 
       <div style={{ marginTop: 6, paddingLeft: 14 }}>
@@ -688,6 +691,8 @@ function SectionShell({
           gap: 10,
           marginBottom: 14,
           flexWrap: "wrap",
+          textAlign: "center",
+          justifyContent: "center",
         }}
       >
         {label ? <Eyebrow>{label}</Eyebrow> : null}
