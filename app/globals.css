@@ -25,45 +25,63 @@ body {
 }
 .hero-base {
   position: absolute; inset: 0;
-  background: #0a0610;
+  background: #140108;
+}
+
+/* ─── Molecule: shared rotating cluster ─── */
+.molecule {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  animation: moleculeDrift 35s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* ─── Orb: shared base ─── */
 .orb {
   position: absolute;
-  width: 500px; height: 500px;
   border-radius: 45% 55% 50% 50% / 55% 45% 55% 45%;
   filter: blur(60px);
   will-change: transform;
   pointer-events: none;
 }
 
-/* Orb A — warm amber/gold */
-.orb-amber       { background: radial-gradient(ellipse at 50% 50%, #ffc030 0%, #ff8800 35%, #cc3300 65%, transparent 90%); opacity: 1;    animation: orbA 25s ease-in-out infinite; }
-.orb-amber-t1    { background: radial-gradient(ellipse at 50% 50%, #ffaa20 0%, #cc5500 40%, transparent 80%); opacity: 0.5;  animation: orbA 25s ease-in-out infinite; animation-delay: -1.5s; }
-.orb-amber-t2    { background: radial-gradient(ellipse at 50% 50%, #ff8800 0%, #aa3300 40%, transparent 80%); opacity: 0.25; animation: orbA 25s ease-in-out infinite; animation-delay: -3s; }
+/* Orb A — warm amber/gold, 120° apart */
+.orb-amber       { width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; background: radial-gradient(ellipse at 50% 50%, #ffc030 0%, #ff8800 35%, #cc3300 65%, transparent 90%); opacity: 1;   animation: orbSpin 30s linear infinite; }
+.orb-amber-t1    { width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; background: radial-gradient(ellipse at 50% 50%, #ffaa20 0%, #cc5500 40%, transparent 80%); opacity: 0.45; animation: orbSpin 30s linear infinite; animation-delay: -1s; }
+.orb-amber-t2    { width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; background: radial-gradient(ellipse at 50% 50%, #ff8800 0%, #aa3300 40%, transparent 80%); opacity: 0.2;  animation: orbSpin 30s linear infinite; animation-delay: -2s; }
 
-/* Orb B — indigo/blue-violet */
-.orb-indigo      { background: radial-gradient(ellipse at 50% 50%, #6858ee 0%, #4030a0 35%, #251870 65%, transparent 90%); opacity: 1;    animation: orbB 28s ease-in-out infinite; }
-.orb-indigo-t1   { background: radial-gradient(ellipse at 50% 50%, #5545cc 0%, #332090 40%, transparent 80%); opacity: 0.5;  animation: orbB 28s ease-in-out infinite; animation-delay: -1.5s; }
-.orb-indigo-t2   { background: radial-gradient(ellipse at 50% 50%, #4535aa 0%, #281870 40%, transparent 80%); opacity: 0.25; animation: orbB 28s ease-in-out infinite; animation-delay: -3s; }
+/* Orb B — indigo/blue-violet, offset 120° */
+.orb-indigo      { width: 550px; height: 550px; margin-top: -275px; margin-left: -275px; background: radial-gradient(ellipse at 50% 50%, #ff2020 0%, #dd0000 35%, #880000 65%, transparent 90%); opacity: 0.3;   animation: orbSpin 30s linear infinite; animation-delay: -10s; }
+.orb-indigo-t1   { width: 550px; height: 550px; margin-top: -275px; margin-left: -275px; background: radial-gradient(ellipse at 50% 50%, #ee1010 0%, #bb0000 40%, transparent 80%); opacity: 0.15; animation: orbSpin 30s linear infinite; animation-delay: -11s; }
+.orb-indigo-t2   { width: 550px; height: 550px; margin-top: -275px; margin-left: -275px; background: radial-gradient(ellipse at 50% 50%, #cc0000 0%, #880000 40%, transparent 80%); opacity: 0.2;  animation: orbSpin 30s linear infinite; animation-delay: -12s; }
 
-/* Orb A path — starts upper-left, sweeps down-right, crosses center, loops */
-@keyframes orbA {
-  0%   { transform: translate(-60%, -20%); }
-  25%  { transform: translate(10%, 40%); }
-  50%  { transform: translate(60%, 70%); }
-  75%  { transform: translate(20%, 20%); }
-  100% { transform: translate(-60%, -20%); }
+/* Orb C — bright pink (smaller), offset 240° */
+.orb-pink        { width: 550px; height: 550px; margin-top: -375px; margin-left: -175px; background: radial-gradient(ellipse at 50% 50%, #ff70bf 0%, #ff59b2 35%, #ff229f 65%, transparent 90%); opacity: 1;   animation: orbSpin 30s linear infinite; animation-delay: -20s; }
+.orb-pink-t1     { width: 550px; height: 550px; margin-top: -335px; margin-left: -175px; background: radial-gradient(ellipse at 50% 50%, #dd1888 0%, #aa0068 40%, transparent 80%); opacity: 0.45; animation: orbSpin 30s linear infinite; animation-delay: -21s; }
+.orb-pink-t2     { width: 550px; height: 550px; margin-top: -375px; margin-left: -175px; background: radial-gradient(ellipse at 50% 50%, #bb0070 0%, #880050 40%, transparent 80%); opacity: 0.2;  animation: orbSpin 30s linear infinite; animation-delay: -22s; }
+
+/* Each orb orbits the center: rotate → push out → counter-rotate to stay upright */
+@keyframes orbSpin {
+  0%   { transform: rotate(0deg) translate(100px, 80px) rotate(0deg); }
+  100% { transform: rotate(360deg) translate(100px, 80px) rotate(-360deg); }
 }
 
-/* Orb B path — starts lower-right, sweeps up-left, crosses center, loops */
-@keyframes orbB {
-  0%   { transform: translate(60%, 80%); }
-  25%  { transform: translate(10%, 30%); }
-  50%  { transform: translate(-50%, -10%); }
-  75%  { transform: translate(30%, 50%); }
-  100% { transform: translate(60%, 80%); }
+/* Whole molecule drifts gently across the screen */
+@keyframes moleculeDrift {
+  0%   { transform: translate(0, -60px); }
+  20%  { transform: translate(30px, 60px); }
+  40%  { transform: translate(-20px, 120px); }
+  60%  { transform: translate(40px, 40px); }
+  80%  { transform: translate(-30px, -80px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Deep wash overlay — desaturates orbs slightly */
+.orb-wash {
+  position: absolute; inset: 0;
+  background: rgba(10, 6, 16, 0.3);
+  pointer-events: none;
 }
 
 /* film grain over hero (SVG noise pattern) */

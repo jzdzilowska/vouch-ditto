@@ -10,14 +10,19 @@ export default function HeroBackdrop({
   return (
     <div className="hero-photo">
       <div className="hero-base" />
-      {/* Orb A trail (behind) → head (front) */}
-      <div className="orb orb-amber-t2" />
-      <div className="orb orb-amber-t1" />
-      <div className="orb orb-amber" />
-      {/* Orb B trail (behind) → head (front) */}
-      <div className="orb orb-indigo-t2" />
-      <div className="orb orb-indigo-t1" />
-      <div className="orb orb-indigo" />
+      <div className="molecule">
+        <div className="orb orb-amber-t2" />
+        <div className="orb orb-amber-t1" />
+        <div className="orb orb-amber" />
+        <div className="orb orb-indigo-t2" />
+        <div className="orb orb-indigo-t1" />
+        <div className="orb orb-indigo" />
+        <div className="orb orb-pink-t2" />
+        <div className="orb orb-pink-t1" />
+        <div className="orb orb-pink" />
+      </div>
+      {/* Deep wash to desaturate slightly */}
+      <div className="orb-wash" />
       {/* Grain on top */}
       <div className="hero-grain" />
       {showAnnotation && (
