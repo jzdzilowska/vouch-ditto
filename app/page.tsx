@@ -6,19 +6,12 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import GrainOverlay from "@/components/GrainOverlay";
+import HeartIcon from "@/components/HeartIcon";
 
 const MIN_PHOTOS = 3;
 const MAX_PHOTOS = 6;
 type Photo = { url: string; path: string };
 type Step = "intro" | "welcome" | "photos" | "basics";
-
-function HeartIcon() {
-  return (
-    <svg className="cta-heart" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M12 21s-8-5.5-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5.5-8 11-8 11z" />
-    </svg>
-  );
-}
 
 // Landing — sensual warm hero with a 4-step inline flow that cross-fades in place:
 // intro → welcome (sign up) → photos (upload) → basics (profile metadata) → /dashboard.
@@ -48,19 +41,18 @@ export default function HomePage() {
     setBusy(true);
     setError(null);
     try {
-      // Try sign up first; ignore "already registered" so returning users fall through to sign-in.
-      const { error: signUpErr } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback?next=/dashboard`,
-        },
+      // Create the account server-side via the admin API so the email
+      // is already flagged as confirmed. New users sail through; returning
+      // ones (409) fall straight to signInWithPassword below.
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      if (signUpErr && !/already.*registered|user already|exists/i.test(signUpErr.message)) {
-        throw signUpErr;
+      if (!res.ok && res.status !== 409) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `Signup failed (${res.status})`);
       }
-      // Always follow with sign-in so we land with an active session
-      // (covers email-confirmation-required and returning-user cases).
       const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
       if (signInErr) throw signInErr;
       setStep("photos");

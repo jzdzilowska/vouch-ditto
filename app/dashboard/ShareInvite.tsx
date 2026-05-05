@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { inviteUrl } from "@/lib/site";
+import HeartIcon from "@/components/HeartIcon";
 
-// Invite-link preview row + iMessage CTA. Visual matches the design's
-// InviteScreen footer (mono "LINK" eyebrow, faint card, copy chip),
-// then the white pill below for the iOS sms: handoff.
+// Share invite — minimal pill containing the link and a copy chip,
+// then the same cta-pill heart-hover button used on the landing page.
+// Same sms: handoff and Web-Share fallback as before.
 export default function ShareInvite({
   slug,
   displayName,
@@ -16,11 +17,13 @@ export default function ShareInvite({
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [hasNativeShare, setHasNativeShare] = useState(false);
 
   useEffect(() => {
     const full = inviteUrl(slug);
     setUrl(full);
     setShortUrl(full.replace(/^https?:\/\//, ""));
+    setHasNativeShare(typeof navigator !== "undefined" && !!navigator.share);
   }, [slug]);
 
   async function copy() {
@@ -57,58 +60,26 @@ export default function ShareInvite({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* link card */}
-      <div
-        className="flex items-center gap-2.5 px-3.5 py-3 rounded-2xl"
-        style={{
-          background: "rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <span
-          className="flex-shrink-0 text-white/45"
-          style={{
-            fontFamily: "var(--font-typewriter), monospace",
-            fontSize: 10,
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-          }}
-        >
-          link
-        </span>
-        <span
-          className="flex-1 text-white/85 truncate text-[13px]"
-          title={url}
-        >
+    <div className="dash-share">
+      <div className="dash-link">
+        <span className="dash-link__url" title={url}>
           {shortUrl || "loading…"}
         </span>
-        <button
-          onClick={copy}
-          className="bg-transparent text-white border rounded-full px-3 py-1.5 text-[11px] cursor-pointer hover:bg-white/5 transition"
-          style={{
-            borderColor: "rgba(255,255,255,0.18)",
-            fontFamily: "var(--font-typewriter), monospace",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-          }}
-        >
-          {copied ? "✓" : "copy"}
+        <button onClick={copy} className="dash-link__copy" type="button">
+          {copied ? <em>copied.</em> : "copy"}
         </button>
       </div>
 
-      {/* CTA: real iMessage handoff via sms: URL scheme */}
-      <a href={smsHref} className="cta-pill">
-        Send via iMessage
+      <a href={smsHref} className="cta-pill" aria-label="Send via iMessage">
+        <span className="cta-pill__label">Send via iMessage</span>
+        <span className="cta-pill__heart" aria-hidden>
+          <HeartIcon />
+        </span>
       </a>
 
-      {/* Tertiary native-share fallback (Android / non-iOS) */}
-      {typeof navigator !== "undefined" && (
-        <button
-          onClick={nativeShare}
-          className="cta-secondary"
-        >
-          Or share another way
+      {hasNativeShare && (
+        <button onClick={nativeShare} className="cta-secondary" type="button">
+          or share <em>another way.</em>
         </button>
       )}
     </div>

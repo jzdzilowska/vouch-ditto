@@ -23,26 +23,53 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  // Try insert with retry on slug collision
+  const fields = {
+    display_name: parsed.data.display_name,
+    age: parsed.data.age ?? null,
+    city: parsed.data.city || null,
+    gender: parsed.data.gender || null,
+    looking_for: parsed.data.looking_for || null,
+    photo_urls: parsed.data.photo_urls,
+  } as const;
+
+  // If a profile already exists for this user (returning onboarder),
+  // just update it in place — keeps the same invite_slug + status.
+  const { data: existing } = await supabase
+    .from("profiles")
+    .select("id, invite_slug")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq("user_id", user.id)
+      .select()
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ profile: data });
+  }
+
+  // Brand-new profile — insert with retry on invite_slug collision.
   let slug = newInviteSlug();
   for (let i = 0; i < 4; i++) {
     const { data, error } = await supabase
       .from("profiles")
       .insert({
         user_id: user.id,
-        display_name: parsed.data.display_name,
-        age: parsed.data.age ?? null,
-        city: parsed.data.city || null,
-        gender: parsed.data.gender || null,
-        looking_for: parsed.data.looking_for || null,
-        photo_urls: parsed.data.photo_urls,
+        ...fields,
         invite_slug: slug,
         status: "pending_friends",
       })
       .select()
       .single();
     if (!error) return NextResponse.json({ profile: data });
-    if (error.code === "23505") { slug = newInviteSlug(); continue; }
+    // Only retry on a unique-constraint hit that's almost certainly the slug.
+    if (error.code === "23505" && /invite_slug/i.test(error.message)) {
+      slug = newInviteSlug();
+      continue;
+    }
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
   return NextResponse.json({ error: "could not generate unique slug" }, { status: 500 });

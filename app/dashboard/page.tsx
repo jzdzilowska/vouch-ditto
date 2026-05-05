@@ -1,18 +1,18 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import HeroBackdrop from "@/components/HeroBackdrop";
+import GrainOverlay from "@/components/GrainOverlay";
+import HeartIcon from "@/components/HeartIcon";
 import ShareInvite from "./ShareInvite";
 
 export const dynamic = "force-dynamic";
 
-// Dashboard — ported from the design's "InviteScreen". Warm dark surface
-// with a soft glow at the top, a Fraunces "Ask 3 people who get you"
-// headline, progress dots, friend list with status pills, and the
-// invite-link preview + iMessage CTA at the bottom.
-//
-// Functionally identical to the previous 3-step dashboard: still gates
-// the synthesize CTA at 2+ vouches, still shows live/draft/paused
-// status, still posts to the same Supabase tables.
+// Dashboard — same dressing as the landing page: black canvas, drifting
+// orb molecule, film grain on top, 14px sans body with italic em accents,
+// CTA pills that cross-fade to a heart on hover. Functionally still the
+// 3-vouch invite hub: gates synthesis at 2+ vouches, shows live/draft
+// status, posts to the same Supabase tables.
 export default async function DashboardPage() {
   const supabase = createClient();
   const {
@@ -28,7 +28,6 @@ export default async function DashboardPage() {
 
   if (!profile) redirect("/");
 
-  // Pull each submission so we can show the friend rows with names + status.
   const { data: submissions } = await supabase
     .from("friend_submissions")
     .select("id, friend_name, friend_relationship, created_at")
@@ -47,9 +46,8 @@ export default async function DashboardPage() {
 
   const ready = submissionCount >= 2;
   const live = profile.status === "live";
+  const remaining = Math.max(0, 3 - submissionCount);
 
-  // Map submissions → friend rows; show a few "invite" placeholder rows
-  // until they reach the recommended 3-vouch target.
   type FriendRow = { name: string; relation: string; status: "vouched" | "pending" | "invite"; initials: string };
   const rows: FriendRow[] = (submissions ?? []).map((s) => ({
     name: s.friend_name,
@@ -58,100 +56,81 @@ export default async function DashboardPage() {
     initials: initialsOf(s.friend_name),
   }));
   while (rows.length < 3) {
-    rows.push({ name: "—", relation: "send your link", status: "invite", initials: "+" });
+    rows.push({ name: "waiting", relation: "send your link", status: "invite", initials: "+" });
   }
 
   return (
-    <main className="phone-edge-to-edge relative w-full min-h-[100dvh] bg-[#0c0805] overflow-hidden text-ink">
-      {/* warm soft glow at the top — connects visually to landing */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: -120, left: -40, right: -40, height: 380,
-          background: "radial-gradient(ellipse 60% 70% at 50% 40%, rgba(210,136,101,0.45) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div className="hero-grain" style={{ opacity: 0.08 }} />
+    <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] overflow-hidden bg-black text-ink">
+      <HeroBackdrop />
+      <GrainOverlay opacity={0.2} />
 
-      {/* sign out — top right, very subtle */}
-      <form action="/auth/signout" method="post" className="absolute z-10" style={{ top: 60, right: 16 }}>
-        <button className="text-[10px] tracking-[0.18em] uppercase text-white/45 hover:text-white/80" style={{ fontFamily: "var(--font-typewriter), monospace" }}>
-          sign out
-        </button>
+      <form
+        action="/auth/signout"
+        method="post"
+        className="absolute z-10"
+        style={{ top: 24, right: 22 }}
+      >
+        <button className="dash-signout">sign out</button>
       </form>
 
-      <div className="relative z-[3] flex flex-col px-[26px]" style={{ paddingTop: 92, paddingBottom: 30 }}>
-        <div className="eyebrow">step 2 of 4 · invite</div>
-
-        <h1
-          className="mt-[18px] text-white"
-          style={{
-            fontFamily: "var(--font-display), 'Fraunces', serif",
-            fontWeight: 300,
-            fontSize: 36,
-            lineHeight: 1.05,
-            letterSpacing: "-0.025em",
-          }}
-        >
-          Ask {Math.max(0, 3 - submissionCount) || "3"} {Math.max(0, 3 - submissionCount) === 1 ? "more person" : "people"}
-          <br />
-          <em style={{ fontFamily: "var(--font-italic), 'Instrument Serif', serif", fontWeight: 400, fontStyle: "italic" }}>
-            who get you
-          </em>
-          .
+      <div className="dash-shell">
+        <h1 className="welcome-heading" style={{ maxWidth: 280 }}>
+          {remaining === 0 ? (
+            <>
+              All three are <em>in.</em>
+            </>
+          ) : remaining === 1 ? (
+            <>
+              One more voice <em>and you’re seen.</em>
+            </>
+          ) : (
+            <>
+              Now ask {remaining === 3 ? "three" : `${remaining} more`}{" "}
+              <em>who actually get who you are.</em>
+            </>
+          )}
         </h1>
 
-        <p
-          className="mt-[14px] text-white/60"
-          style={{ fontSize: 14, lineHeight: 1.5, maxWidth: 300 }}
-        >
-          They&apos;ll get a link. Three quick questions. Sixty seconds, max.{" "}
-          <em style={{ fontFamily: "var(--font-italic), 'Instrument Serif', serif" }}>
-            You&apos;ll be the only one who sees their answers.
-          </em>
-        </p>
-
-        {/* Progress dots */}
-        <div className="mt-[22px] flex items-center gap-3">
-          <ProgressDots done={submissionCount} total={3} />
-          <div className="text-[13px] text-white/80">
-            <span className="text-white font-medium">{submissionCount} of 3</span> vouches in
+        <div className="dash-progress">
+          <div className="dash-progress-row">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="dash-progress-pill" data-done={i < submissionCount} />
+            ))}
+          </div>
+          <div className="dash-progress-caption">
+            {submissionCount} of 3{" "}
+            <em>{submissionCount === 0 ? "to begin." : submissionCount >= 3 ? "in." : "so far."}</em>
           </div>
         </div>
 
-        {/* Friend list */}
-        <div className="mt-[22px] flex flex-col gap-0.5">
+        <div className="dash-friends">
           {rows.slice(0, 5).map((r, i) => (
             <FriendRow key={i} {...r} />
           ))}
-          <AddRow />
         </div>
 
-        {/* Synthesize / discover step (replaces "step 3-of-3" card from old dashboard) */}
         {(ready || live) && (
-          <div className="mt-6 flex flex-col gap-2">
-            <Link
-              href={live ? "/discover" : "/review"}
-              className="cta-pill"
-              style={{ background: live ? "#fff" : "#fff" }}
-            >
-              {live
-                ? "Open discover →"
-                : latestDraft
-                ? "Review your draft →"
-                : "Generate your bio →"}
-            </Link>
-            <div className="text-center eyebrow opacity-70">
-              {live ? "you're live" : latestDraft ? "draft ready" : "ready when you are"}
-            </div>
-          </div>
+          <Link
+            href={live ? "/discover" : "/review"}
+            className="cta-pill"
+            aria-label={live ? "Open discover" : latestDraft ? "Review your draft" : "Generate your bio"}
+          >
+            <span className="cta-pill__label">
+              {live ? "Open discover" : latestDraft ? "Review your draft" : "Generate your bio"}
+            </span>
+            <span className="cta-pill__heart" aria-hidden>
+              <HeartIcon />
+            </span>
+          </Link>
         )}
 
-        <div className="flex-1 min-h-[20px]" />
-
-        {/* Invite link preview + send-via-iMessage CTA (the existing component) */}
         <ShareInvite slug={profile.invite_slug} displayName={profile.display_name} />
+      </div>
+
+      <div className="absolute" style={{ right: 22, bottom: 28 }}>
+        <div className="wordmark" style={{ fontSize: 28 }}>
+          vouch<sup>®</sup>
+        </div>
       </div>
     </main>
   );
@@ -162,25 +141,6 @@ function initialsOf(name: string): string {
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "?";
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-function ProgressDots({ done, total }: { done: number; total: number }) {
-  return (
-    <div className="flex gap-[5px]">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className="rounded-full transition-colors duration-300"
-          style={{
-            width: 24,
-            height: 6,
-            background: i < done ? "#e8a575" : "rgba(255,255,255,0.14)",
-            boxShadow: i < done ? "0 0 12px rgba(232,165,117,0.5)" : "none",
-          }}
-        />
-      ))}
-    </div>
-  );
 }
 
 function FriendRow({
@@ -194,64 +154,31 @@ function FriendRow({
   status: "vouched" | "pending" | "invite";
   initials: string;
 }) {
+  const isInvite = status === "invite";
   return (
-    <div
-      className="flex items-center gap-3 py-3"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-    >
+    <div className="dash-friend">
       <div
-        className="flex-shrink-0 w-[38px] h-[38px] rounded-full flex items-center justify-center text-white"
-        style={{
-          background:
-            status === "vouched"
-              ? "linear-gradient(135deg, #d28865 0%, #8a3e2a 100%)"
-              : status === "pending"
-              ? "linear-gradient(135deg, #e8a575 0%, #a06040 100%)"
-              : "rgba(255,255,255,0.08)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          fontFamily: "var(--font-display), 'Fraunces', serif",
-          fontSize: 14,
-        }}
+        className={"dash-friend__avatar" + (isInvite ? " dash-friend__avatar--invite" : "")}
       >
         {initials}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[15px] text-white" style={{ letterSpacing: "-0.005em" }}>
+      <div className="dash-friend__body">
+        <div
+          className={"dash-friend__name" + (isInvite ? " dash-friend__name--placeholder" : "")}
+        >
           {name}
         </div>
-        <div
-          className="mt-px text-white/40"
-          style={{
-            fontFamily: "var(--font-typewriter), monospace",
-            fontSize: 10,
-            letterSpacing: "0.12em",
-          }}
-        >
-          {relation}
-        </div>
+        <div className="dash-friend__relation">{relation}</div>
       </div>
-      <span
-        className={
-          "status-pill " +
-          (status === "vouched" ? "status-vouched" : status === "pending" ? "status-pending" : "status-invite")
-        }
-      >
-        {status === "vouched" ? "✓ vouched" : status === "pending" ? "waiting" : "send"}
+      <span className="dash-friend__status">
+        {status === "vouched" ? (
+          <em>vouched.</em>
+        ) : status === "pending" ? (
+          "waiting"
+        ) : (
+          <em>send.</em>
+        )}
       </span>
     </div>
-  );
-}
-
-function AddRow() {
-  return (
-    <button className="flex items-center gap-3 py-3 bg-transparent border-0 cursor-pointer text-left w-full">
-      <div
-        className="flex-shrink-0 w-[38px] h-[38px] rounded-full flex items-center justify-center text-white/50 text-lg"
-        style={{ border: "1px dashed rgba(255,255,255,0.25)" }}
-      >
-        +
-      </div>
-      <div className="text-[14px] text-white/55">add another friend</div>
-    </button>
   );
 }
