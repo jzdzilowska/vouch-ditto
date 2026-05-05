@@ -13,6 +13,8 @@ export default function HeroBackdrop({
       {/* Light leak: bright core + stretched trailing layers */}
       <div className={`flare-core flare-core-${variant}`} />
       <div className={`flare-trail flare-trail-${variant}`} />
+      {variant === "rose" && <div className="flare-core flare-core-rose-pink" />}
+      {variant === "rose" && <div className="flare-trail flare-trail-rose-accent" />}
       <div className={`flare-wash flare-wash-${variant}`} />
       <div className="hero-grain" />
       <div className="top-fade" />

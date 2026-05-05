@@ -25,7 +25,7 @@ body {
 }
 .hero-base {
   position: absolute; inset: 0;
-  background: #ff7300;
+  background: #f8009d;
 }
 
 /* ─── Flare: bright concentrated core ─── */
@@ -53,9 +53,15 @@ body {
   animation: flareCore 19s ease-in-out infinite;
 }
 .flare-core-rose {
-  background: radial-gradient(ellipse 90% 80% at 50% 50%, #fff0f3 0%, #ffc062 25%, #ff7c58 50%, #e32168 70%, transparent 85%);
-  top: 5%; left: 5%;
-  animation: flareCore 32s ease-in-out infinite;
+  background: radial-gradient(ellipse 70% 80% at 50% 50%, #ffee50 0%, #ffc000 20%, #ff8800 45%, #cc3300 65%, transparent 85%);
+  top: 15%; left: 15%;
+  animation: flareCoreRose 32s ease-in-out infinite;
+}
+
+.flare-core-rose-pink {
+  background: radial-gradient(ellipse 75% 85% at 50% 50%, #ff50a0 0%, #ff1878 25%, #cc0058 50%, #5a0028 70%, transparent 85%);
+  top: 15%; left: 10%;
+  animation: flarePink 38s ease-in-out infinite;
 }
 
 /* ─── Flare: stretched smear trailing the core ─── */
@@ -64,7 +70,7 @@ body {
   width: 750px; height: 700px;
   border-radius: 40% 60% 50% 50% / 50% 40% 60% 50%;
   filter: blur(90px);
-  opacity: 0.55;
+  opacity: 0.7;
   will-change: transform;
 }
 .flare-trail-warm {
@@ -83,9 +89,16 @@ body {
   animation: flareTrail 32s ease-in-out infinite;
 }
 .flare-trail-rose {
-  background: radial-gradient(ellipse 90% 60% at 35% 50%, #ffbd2f 0%, #ff649d 35%, transparent 70%);
+  background: radial-gradient(ellipse 90% 60% at 35% 50%, #ee2200 0%, #aa0800 35%, transparent 70%);
   top: 0%; left: -5%;
   animation: flareTrail 32s ease-in-out infinite;
+}
+
+/* Magenta accent — secondary flare, opposite side */
+.flare-trail-rose-accent {
+  background: radial-gradient(ellipse 80% 70% at 60% 50%, #ff1890 0%, #cc0060 35%, transparent 70%);
+  top: 0%; left: -5%;
+  animation: flareTrail 36s ease-in-out infinite reverse;
 }
 
 /* ─── Flare: wide soft wash of color ─── */
@@ -94,7 +107,7 @@ body {
   width: 200%; height: 200%;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.5;
+  opacity: 0.65;
   will-change: transform;
 }
 .flare-wash-warm {
@@ -113,7 +126,7 @@ body {
   animation: flareWash 42s ease-in-out infinite;
 }
 .flare-wash-rose {
-  background: radial-gradient(ellipse at 45% 50%, #ffcd7c 0%, #7a3a50 35%, #3d1a28 65%, #25ffff 90%);
+  background: radial-gradient(ellipse at 45% 50%, #ffb70e 0%, #ff7700 35%, #1a0505 65%, #1a0505 90%);
   top: -50%; left: -50%;
   animation: flareWash 43s ease-in-out infinite;
 }
@@ -145,6 +158,16 @@ body {
   60%  { transform: translate(110px, 150px) scaleX(1.2); }
   80%  { transform: translate(70px, -50px) scaleX(1.15); }
   100% { transform: translate(0, 0) scaleX(1); }
+}
+
+/* Pink orb — independent path, opposite drift */
+@keyframes flarePink {
+  0%   { transform: translate(120px, -60px); }
+  20%  { transform: translate(-40px, 180px); }
+  40%  { transform: translate(-100px, 350px); }
+  60%  { transform: translate(60px, 280px); }
+  80%  { transform: translate(150px, 80px); }
+  100% { transform: translate(120px, -60px); }
 }
 
 /* Wash drifts gently underneath */
