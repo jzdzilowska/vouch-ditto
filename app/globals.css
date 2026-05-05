@@ -7,7 +7,7 @@
 }
 
 html, body {
-  background: #0a0a0d;
+  background: #000000;
   color: #f4f1ea;
   font-family: var(--font-sans), system-ui, -apple-system, Helvetica, Arial, sans-serif;
 }
@@ -116,7 +116,7 @@ body {
   font-weight: 300;
   letter-spacing: -0.04em;
   color: #fff;
-  line-height: 0.85;
+  line-height: 0;
 }
 .wordmark sup {
   font-size: 0.28em;
@@ -127,24 +127,66 @@ body {
 }
 .wordmark-italic { font-style: italic; font-family: var(--font-italic), 'Instrument Serif', serif; font-weight: 400; }
 
-/* ─── CTA pill (full width white) ─── */
+/* ─── CTA — text flanked by heart rows; hearts march right + text fades on hover ─── */
 .cta-pill {
-  width: 100%;
-  padding: 18px 24px;
-  border-radius: 999px;
-  background: #fff;
-  color: #111;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 14px 18px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: var(--font-sans);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.005em;
-  border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-  font-family: var(--font-sans);
-  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none;
 }
-.cta-pill:hover { background: #f0f0f0; }
-.cta-pill:active { transform: scale(0.98); }
+
+.cta-pill__hearts {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cta-heart {
+  width: 14px; height: 14px;
+  display: block;
+  fill: #fff;
+  transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+.cta-pill__label {
+  display: inline-block;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0 14px;
+  opacity: 1;
+  transition: max-width 0.55s cubic-bezier(0.65, 0, 0.35, 1),
+              margin   0.55s cubic-bezier(0.65, 0, 0.35, 1),
+              opacity  0.3s  ease;
+}
+
+.cta-pill:hover .cta-pill__label {
+  max-width: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+/* All hearts march right, with stagger so the row "flows" */
+.cta-pill:hover .cta-heart { transform: translateX(10px); }
+.cta-pill:hover .cta-pill__hearts--left  .cta-heart:nth-child(1) { transition-delay: 0.05s; }
+.cta-pill:hover .cta-pill__hearts--left  .cta-heart:nth-child(2) { transition-delay: 0.10s; }
+.cta-pill:hover .cta-pill__hearts--left  .cta-heart:nth-child(3) { transition-delay: 0.15s; }
+.cta-pill:hover .cta-pill__hearts--right .cta-heart:nth-child(1) { transition-delay: 0.20s; }
+.cta-pill:hover .cta-pill__hearts--right .cta-heart:nth-child(2) { transition-delay: 0.25s; }
+.cta-pill:hover .cta-pill__hearts--right .cta-heart:nth-child(3) { transition-delay: 0.30s; }
+
+.cta-pill:active { opacity: 0.85; }
 .cta-pill:disabled { opacity: 0.32; cursor: not-allowed; }
 
 .cta-secondary {
@@ -268,8 +310,7 @@ body {
     display: block;
     position: fixed; inset: 0;
     z-index: 0;
-    background:
-      radial-gradient(ellipse 80% 70% at 50% 35%, #2a1520 0%, #16080d 55%, #08050a 100%);
+    background: #000000;
   }
 
   /* Centering stage with auto-scaling for short viewports. */
