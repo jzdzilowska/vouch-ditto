@@ -3,8 +3,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import GrainOverlay from "@/components/GrainOverlay";
-import HeartIcon from "@/components/HeartIcon";
 import ShareInvite from "./ShareInvite";
+import HeartIcon from "@/components/HeartIcon";
 
 export const dynamic = "force-dynamic";
 
@@ -36,15 +36,6 @@ export default async function DashboardPage() {
 
   const submissionCount = submissions?.length ?? 0;
 
-  const { data: latestDraft } = await supabase
-    .from("profile_drafts")
-    .select("id, created_at")
-    .eq("profile_id", profile.id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  const ready = submissionCount >= 2;
   const live = profile.status === "live";
   const remaining = Math.max(0, 3 - submissionCount);
 
@@ -111,36 +102,26 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        {(ready || live) && (
+        {remaining === 0 && (
           <Link
-            href={live ? "/discover" : "/review"}
+            href="/profile"
             className="cta-pill"
-            aria-label={live ? "Open discover" : latestDraft ? "Review your draft" : "You have some great friends. Your bio's ready."}
-            style={
-              !live && !latestDraft
-                ? { minWidth: 290, marginTop: 14, marginBottom: -10 }
-                : undefined
-            }
+            aria-label="Your profile is ready. You have some great friends."
+            style={{ marginTop: 14, minWidth: 320 }}
           >
             <span className="cta-pill__label">
-              {live ? (
-                "Open discover"
-              ) : latestDraft ? (
-                "Review your draft"
-              ) : (
-                <span
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    lineHeight: 1.15,
-                    gap: 2,
-                  }}
-                >
-                  <span>Your bio&apos;s ready.</span>
-                  You have some great friends.
-                </span>
-              )}
+              <span
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  lineHeight: 1.15,
+                  gap: 2,
+                }}
+              >
+                <span>Your profile&apos;s ready.</span>
+                You have some great friends.
+              </span>
             </span>
             <span className="cta-pill__heart" aria-hidden>
               <HeartIcon />

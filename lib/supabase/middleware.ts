@@ -34,7 +34,8 @@ export async function updateSession(request: NextRequest) {
   const isProtected =
     path.startsWith("/dashboard") ||
     path.startsWith("/review") ||
-    path.startsWith("/discover");
+    path.startsWith("/discover") ||
+    path.startsWith("/profile");
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
