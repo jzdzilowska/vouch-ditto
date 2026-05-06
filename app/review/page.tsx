@@ -40,7 +40,7 @@ export default async function ReviewPage() {
   const spotlight = buildSpotlight(subs ?? [], profile.display_name);
 
   return (
-    <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] bg-black text-ink overflow-hidden">
+    <main className="phone-edge-to-edge relative w-full min-h-[100dvh] bg-black text-ink">
       <HeroBackdrop />
       <GrainOverlay opacity={0.2} />
 

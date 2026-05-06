@@ -46,7 +46,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="phone-edge-to-edge relative w-full h-full min-h-[100dvh] overflow-hidden bg-black text-ink">
+    <main className="phone-edge-to-edge relative w-full min-h-[100dvh] bg-black text-ink">
       <HeroBackdrop />
       <GrainOverlay opacity={0.2} />
 

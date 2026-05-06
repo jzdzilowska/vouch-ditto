@@ -2,7 +2,7 @@
 
 A dating app where your **friends** write your profile.
 
-You sign up and upload photos. You text 2–3 friends a link. Each friend opens an iMessage-style chat that asks them three pointed questions about you. Claude stitches their answers into a single bio. You review, tweak, and publish — then it's discoverable as a swipeable photo card with the friend-written bio on top.
+You sign up and upload photos. You text 2–3 friends a link. Each friend opens an iMessage-style chat that asks three pointed questions about you. Claude can stitch their answers into a single bio. Once live, your profile is discoverable as a swipeable photo card with friend-written signal on top.
 
 ## Stack
 
@@ -16,11 +16,12 @@ You sign up and upload photos. You text 2–3 friends a link. Each friend opens 
 
 1. **Sign up** → inline form on `/` (email + password) — also reachable via `/signup`
 2. **Dashboard** → `/dashboard` — copy the invite link or "Send via iMessage" (real `sms:` URL scheme prefills the user's Messages app)
-3. **Friend submits** → `/friend/[slug]` opens an iMessage-styled chat that walks the friend through 5 turns: name, relationship, then 3 questions
-4. **Synthesize** → `/api/synthesize` calls Claude with the latest 3 vouches and writes a `profile_drafts` row
-5. **Review** → `/review` — preview card, edit, regenerate, or approve
-6. **Discover** → `/discover` — swipeable card stack of other live profiles. Tap left/right halves to flip photos. Like/Pass buttons record swipes; a DB trigger creates a `matches` row on reciprocal likes
-7. **Demo SMS outbox** → `/admin/sms` — every text the (mock) provider would have sent
+3. **Friend submits** → `/friend/[slug]` opens an iMessage-styled chat that collects name, relationship, then 3 questions
+4. **Dashboard state** → `/dashboard` reads `friend_submissions` and unlocks the "profile ready" CTA after 3 submissions
+5. **Profile** → `/profile` renders the public-facing profile view using submitted friend data
+6. **Optional synthesis/review path** → `/api/synthesize` + `/review` (kept in codebase for draft generation/editing flows)
+7. **Discover** → `/discover` — swipeable card stack of other live profiles. Tap left/right halves to flip photos. Like/Pass buttons record swipes; a DB trigger creates a `matches` row on reciprocal likes
+8. **Demo SMS outbox** → `/admin/sms` — every text the mock provider would have sent
 
 ## Architecture notes
 
@@ -29,6 +30,7 @@ You sign up and upload photos. You text 2–3 friends a link. Each friend opens 
 - **SMS abstraction**: `lib/sms/{types,mock,twilio,index}.ts`. Mock by default; `SMS_PROVIDER=twilio` flips to real sends with `TWILIO_*` env vars. Mock writes to `sms_outbox` so you can demo the full flow without paying for a Twilio number
 - **Synthesis prompt** lives in `lib/synthesize.ts` — pure function, easy to unit test or A/B
 - **Match-creation trigger** is in the SQL migration so reciprocal likes can never miss
+- **Mock vouch prefill button** is dev-oriented (`components/PresentationMockButton.tsx`) and calls `/api/mock/prefill-friend-submissions`
 
 ## Quickstart
 

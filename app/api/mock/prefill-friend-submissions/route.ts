@@ -30,14 +30,21 @@ export async function POST() {
     return NextResponse.json({ error: "profile not found" }, { status: 404 });
   }
 
-  // Reset to a deterministic presentation set.
-  const { error: deleteErr } = await admin
+  const { count: existingCount, error: countErr } = await admin
     .from("friend_submissions")
-    .delete()
+    .select("*", { count: "exact", head: true })
     .eq("profile_id", profile.id);
-  if (deleteErr) {
-    return NextResponse.json({ error: deleteErr.message }, { status: 500 });
+
+  if (countErr) {
+    return NextResponse.json({ error: countErr.message }, { status: 500 });
   }
+
+  const current = existingCount ?? 0;
+  if (current >= 3) {
+    return NextResponse.json({ ok: true, inserted: 0, alreadyComplete: true });
+  }
+
+  const need = 3 - current;
 
   const samples = [
     {
@@ -70,13 +77,12 @@ export async function POST() {
     },
   ];
 
-  const { error: insertErr } = await admin
-    .from("friend_submissions")
-    .insert(samples);
+  const toInsert = samples.slice(current, current + need);
+
+  const { error: insertErr } = await admin.from("friend_submissions").insert(toInsert);
   if (insertErr) {
     return NextResponse.json({ error: insertErr.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, inserted: samples.length });
+  return NextResponse.json({ ok: true, inserted: toInsert.length });
 }
-
