@@ -3,6 +3,7 @@ import { Fraunces, Instrument_Serif, Special_Elite, Inter } from "next/font/goog
 import "./globals.css";
 import PhoneFrame from "@/components/PhoneFrame";
 import PresentationMockButton from "@/components/PresentationMockButton";
+import TouchCursor from "@/components/TouchCursor";
 
 // Display serif — Fraunces (light + italic) for the wordmark and headlines.
 const fraunces = Fraunces({
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${instrument.variable} ${typewriter.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-bg text-ink font-sans">
+        <TouchCursor />
         <PresentationMockButton />
         {/* On desktop, wraps the whole app inside an iPhone-shaped frame
             (with notch + status bar + home indicator). On mobile, collapses

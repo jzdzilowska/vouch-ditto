@@ -8,11 +8,6 @@ import HeartIcon from "@/components/HeartIcon";
 
 export const dynamic = "force-dynamic";
 
-// Dashboard — same dressing as the landing page: black canvas, drifting
-// orb molecule, film grain on top, 14px sans body with italic em accents,
-// CTA pills that cross-fade to a heart on hover. Functionally still the
-// 3-vouch invite hub: gates synthesis at 2+ vouches, shows live/draft
-// status, posts to the same Supabase tables.
 export default async function DashboardPage() {
   const supabase = createClient();
   const {

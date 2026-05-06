@@ -1336,3 +1336,33 @@ body {
   .phone-screen::-webkit-scrollbar { display: none; }
   .phone-screen { scrollbar-width: none; }
 }
+
+/* Mouse only: plain gray “finger” dot, full page (see TouchCursor.tsx) */
+@media (pointer: fine) {
+  html.touch-cursor-active,
+  html.touch-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+.touch-cursor-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2147483000;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  background: rgba(210, 210, 210, 0.22);
+  border: none;
+  box-shadow: none;
+  transition: transform 0.08s ease-out, background-color 0.08s ease-out;
+}
+
+.touch-cursor-ring--pressed {
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(195, 195, 195, 0.32);
+}

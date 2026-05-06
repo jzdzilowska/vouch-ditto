@@ -2,9 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Wraps the entire app in a 402×874 iPhone-shaped frame on desktop
-// (matching the design bundle's IOSDevice spec — dynamic island, status
-// bar, home indicator) and collapses to full-screen on real mobile.
 export default function PhoneFrame({ children }: { children: React.ReactNode }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [time, setTime] = useState<string>("9:41");

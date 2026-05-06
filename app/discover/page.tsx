@@ -6,11 +6,6 @@ import type { ProfileCardData, VouchExcerpt } from "@/components/ProfileCard";
 
 export const dynamic = "force-dynamic";
 
-// Discover — full-bleed swipe deck. Each card uses the new ProfileCard
-// design (Stories-segmented photo carousel + Instrument Serif friend
-// quotes + Fraunces name). The friend quote is pulled live from the
-// most recent friend_submission and rotates between the three Q&A fields
-// for variety. Pass/Like buttons sit at the bottom over a glass blur.
 export default async function DiscoverPage() {
   const supabase = createClient();
   const {
@@ -18,14 +13,12 @@ export default async function DiscoverPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/discover");
 
-  // Already-swiped profiles
   const { data: prior } = await supabase
     .from("swipes")
     .select("swiped_profile_id")
     .eq("swiper_id", user.id);
   const seen = new Set((prior ?? []).map((p) => p.swiped_profile_id));
 
-  // Live profiles excluding self
   const { data: profiles } = await supabase
     .from("profiles")
     .select("id, display_name, age, city, bio, photo_urls, user_id")
@@ -34,8 +27,6 @@ export default async function DiscoverPage() {
 
   const candidates = (profiles ?? []).filter((p) => !seen.has(p.id));
 
-  // Pull friend submissions for the visible candidates so we can build
-  // VouchExcerpts (3 per profile, pulling from each Q&A field).
   const ids = candidates.map((c) => c.id);
   const vouchesByProfile = new Map<string, VouchExcerpt[]>();
   if (ids.length) {
@@ -48,9 +39,6 @@ export default async function DiscoverPage() {
       .order("created_at", { ascending: true });
     for (const s of subs ?? []) {
       const arr = vouchesByProfile.get(s.profile_id) ?? [];
-      // Use q3 (the hidden-strength) as the highlight quote — it tends
-      // to read best as a vouch ("the kind of person who…"). Falls
-      // back to q2 if q3 is short.
       const text =
         (s.q3_secret_strength?.length ?? 0) >= 24
           ? s.q3_secret_strength

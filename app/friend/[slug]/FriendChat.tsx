@@ -41,13 +41,11 @@ export default function FriendChat({
   const [q2, setQ2] = useState("");
   const [q3, setQ3] = useState("");
 
-  // Auto-scroll to bottom on new bubble / typing toggle.
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [bubbles, typing]);
 
-  // Initial intro sequence: kick off the conversation.
   useEffect(() => {
     let cancel = false;
     (async () => {
@@ -166,8 +164,6 @@ export default function FriendChat({
   const placeholder = "iMessage";
   const disabled = typing || step === "submitting" || step === "done" || step === "intro";
 
-  // Compute which bubbles get the iOS "tail" — only the last one in a
-  // consecutive streak from the same side (matches iOS behavior).
   const tailMap = useMemo(() => {
     const m = new Set<string>();
     for (let i = 0; i < bubbles.length; i++) {

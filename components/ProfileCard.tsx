@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 
-// VouchExcerpt — what each friend's submission boils down to inline.
-// Built from a friend_submission row: friend_name + relationship + a
-// quote pulled from one of the three Q&A fields (q1/q2/q3).
 export type VouchExcerpt = {
   text: string;
   author: string;
@@ -23,11 +20,6 @@ export type ProfileCardData = {
   occupation?: string | null;
 };
 
-// Profile card — ported from the design bundle's ProfileScreen.
-// Full-bleed warm photo carousel with Stories-style segments at top,
-// name + meta in Fraunces, and the friend-vouch as the hero copy
-// (Instrument Serif italic). Tap left/right to navigate photos; use
-// the dot pager to switch between vouches.
 export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
   const [photoIdx, setPhotoIdx] = useState(0);
   const [vouchIdx, setVouchIdx] = useState(0);
@@ -36,7 +28,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
   const totalPhotos = Math.max(1, photos.length);
   const photo = photos[photoIdx] ?? null;
 
-  // If there are no friend vouches yet, fall back to the AI-stitched bio.
   const vouches: VouchExcerpt[] =
     profile.vouches && profile.vouches.length > 0
       ? profile.vouches
@@ -54,7 +45,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
 
   return (
     <div className="relative w-full h-full bg-black overflow-hidden select-none" style={{ minHeight: 600 }}>
-      {/* Photo */}
       {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -70,7 +60,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
         </div>
       )}
 
-      {/* Stories-style photo segments */}
       <div
         className="absolute flex gap-1 z-10 pointer-events-none"
         style={{ top: 18, left: 14, right: 14 }}
@@ -88,7 +77,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
         ))}
       </div>
 
-      {/* Tap zones for photo navigation */}
       {totalPhotos > 1 && (
         <>
           <button
@@ -106,7 +94,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
         </>
       )}
 
-      {/* Bottom fade */}
       <div
         className="absolute left-0 right-0 bottom-0 pointer-events-none z-[2]"
         style={{
@@ -116,12 +103,10 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
         }}
       />
 
-      {/* Bottom stack — name + meta, divider, vouch quote, dot pager */}
       <div
         className="absolute z-30 flex flex-col gap-4"
         style={{ left: 22, right: 22, bottom: 28 }}
       >
-        {/* name + meta */}
         <div>
           <div
             className="text-white"
@@ -161,13 +146,10 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
           </div>
         </div>
 
-        {/* divider */}
         <div className="h-px bg-white/10" />
 
-        {/* vouch quote */}
         {vouch && (
           <div>
-            {/* attribution chip */}
             <div
               className="inline-flex items-center gap-2 px-[11px] py-[5px] rounded-full mb-3 backdrop-blur-md"
               style={{
@@ -212,7 +194,6 @@ export default function ProfileCard({ profile }: { profile: ProfileCardData }) {
               </div>
             )}
 
-            {/* dot pager */}
             {vouches.length > 1 && (
               <div className="flex gap-1.5 mt-3.5">
                 {vouches.map((_, i) => (

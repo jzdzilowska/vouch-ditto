@@ -3,24 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-// Profile redesign — "your profile is made out of other people's words"
-//
-// Layout = Variant A "Pages" from the design spec:
-//   1) Full-bleed photo hero (fills the visible area). Masthead-style
-//      bottom stack: PROFILE NO. xxx eyebrow + 76px Fraunces name +
-//      hairline + 2-col metadata, with a circular vouch-count seal in
-//      the upper right and a "keep scrolling" cue at the very bottom.
-//   2) Below the hero, the orb-molecule animated backdrop (same moving
-//      gradient as /onboarding) with the vouch-built sections:
-//      hero quote → three-words constellation → perfect-date carousel
-//      → secret-strength stack → chosen-by friend rows → photo strip.
-//
-// The orb backdrop is `position: fixed` so it stays anchored to the
-// viewport as the user scrolls — exactly like the onboarding page,
-// where the orbs drift behind the content. The photo hero overlays it
-// (full opaque image), then below the hero the canvas is transparent
-// so the orbs read through.
-
 export type ProfileViewVouch = {
   name: string;
   relation: string | null;
@@ -52,13 +34,8 @@ export default function ProfileView({
 }) {
   return (
     <main className="phone-edge-to-edge relative w-full bg-black text-ink">
-      {/* Fixed orb backdrop — the moving gradient from onboarding,
-          anchored to the viewport so it stays in place as the page
-          scrolls. Photo hero overlays it (full opaque image); below
-          the hero the canvas is transparent so the orbs read through. */}
       <ProfileBackdrop />
 
-      {/* Top chrome — back chevron, in the dashboard's voice */}
       <div
         className="absolute z-40"
         style={{ top: 44, left: 22 }}
@@ -81,11 +58,8 @@ export default function ProfileView({
         </Link>
       </div>
 
-      {/* Photo hero — first visible screen */}
       <ProfilePhotoHero profile={profile} vouchCount={vouches.length} vouches={vouches} />
 
-      {/* Below-the-fold canvas — orb shows through. Soft seam from the
-          black photo bottom into the orb canvas. */}
       <div className="relative" style={{ zIndex: 2 }}>
         <div
           aria-hidden
@@ -120,10 +94,6 @@ export default function ProfileView({
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Backdrop — orb molecule + grain, fixed-positioned so it follows the
-// viewport as the page scrolls (same drifting gradient as onboarding).
-// ──────────────────────────────────────────────────────────────────────
 function ProfileBackdrop() {
   return (
     <div
@@ -150,7 +120,6 @@ function ProfileBackdrop() {
         <div className="orb orb-pink-t1" />
         <div className="orb orb-pink" />
       </div>
-      {/* Heavier wash so type stays legible */}
       <div className="orb-wash" style={{ background: "rgba(8, 4, 12, 0.55)" }} />
       <div className="profile-backdrop-topgrad" />
       <div className="hero-grain profile-backdrop-grain" />
@@ -158,10 +127,6 @@ function ProfileBackdrop() {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Photo hero — fills the first visible screen. Masthead-style bottom
-// stack with a circular vouch-count seal in the upper right.
-// ──────────────────────────────────────────────────────────────────────
 function ProfilePhotoHero({
   profile,
   vouchCount,
@@ -218,7 +183,6 @@ function ProfilePhotoHero({
       className="relative w-full overflow-hidden select-none"
       style={{ height: "100dvh", maxHeight: 874, zIndex: 2}}
     >
-      {/* Photo — full-bleed, untouched. Cross-fade on swap via key. */}
       {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -244,7 +208,6 @@ function ProfilePhotoHero({
         />
       ) : null}
 
-      {/* Top fade — segments + chrome legibility */}
       <div
         className="absolute left-0 right-0 top-0 pointer-events-none"
         style={{
@@ -255,7 +218,6 @@ function ProfilePhotoHero({
         }}
       />
 
-      {/* Bottom fade — text legibility, taller */}
       <div
         className="absolute left-0 right-0 bottom-0 pointer-events-none"
         style={{
@@ -266,7 +228,6 @@ function ProfilePhotoHero({
         }}
       />
 
-      {/* Tap zones — left/right halves cycle photos */}
       {totalPhotos > 1 && (
         <>
           <button
@@ -305,12 +266,10 @@ function ProfilePhotoHero({
       )}
 
 
-      {/* Bottom stack — masthead */}
       <div
         className="absolute"
         style={{ left: 22, right: 22, bottom: 44, zIndex: 5 }}
       >
-        {/* Name — masthead Fraunces 76px */}
         <h1
           style={{
             fontFamily: DISPLAY,
@@ -327,8 +286,6 @@ function ProfilePhotoHero({
           {profile.display_name}
         </h1>
 
-        {/* metadata — only "based in" since occupation isn't in the
-            profiles schema. Keeps the typographic specimen feel. */}
         {profile.city && (
           <div>
             <div
@@ -374,11 +331,6 @@ function ProfilePhotoHero({
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Three-words constellation — every friend's q1 split into words, with
-// sup tags showing which friend(s) said it. Words said by 2+ friends
-// emphasized larger.
-// ──────────────────────────────────────────────────────────────────────
 function ThreeWordsSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   type WordEntry = { word: string; by: string[] };
   const wordMap: Record<string, WordEntry> = {};
@@ -450,10 +402,6 @@ function ThreeWordsSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Perfect-date carousel — avatar selector at top, then italic 22px
-// quote with a left border. Tap an avatar to switch friend.
-// ──────────────────────────────────────────────────────────────────────
 function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   const [idx, setIdx] = useState(0);
   const v = vouches[idx];
@@ -543,9 +491,6 @@ function PerfectDateSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Secret-strength stack — every q3 with a footnote-style number marker.
-// ──────────────────────────────────────────────────────────────────────
 function SecretStrengthSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   return (
     <SectionShell
@@ -591,10 +536,6 @@ function SecretStrengthSection({ vouches }: { vouches: ProfileViewVouch[] }) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Chosen-by — small portrait row of friends who vouched. Reads like
-// the credits at the end. Reuses the dashboard's .dash-friend rows.
-// ──────────────────────────────────────────────────────────────────────
 function ChosenBySection({ vouches }: { vouches: ProfileViewVouch[] }) {
   return (
     <SectionShell
@@ -624,10 +565,6 @@ function ChosenBySection({ vouches }: { vouches: ProfileViewVouch[] }) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Photo strip — the rest of the photos, secondary to the words.
-// Horizontal scroll, smallish.
-// ──────────────────────────────────────────────────────────────────────
 function PhotoStripSection({ profile }: { profile: ProfileViewProfile }) {
   if (profile.photo_urls.length === 0) return null;
   return (
@@ -666,9 +603,6 @@ function PhotoStripSection({ profile }: { profile: ProfileViewProfile }) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Section shell — eyebrow + italic caption + content. Reused.
-// ──────────────────────────────────────────────────────────────────────
 function SectionShell({
   label,
   caption,
